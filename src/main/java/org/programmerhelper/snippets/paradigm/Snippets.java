@@ -22,41 +22,30 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
 
 public abstract class Snippets extends JPanel  {
-
     protected String originalInput;
     protected String output;
-
     protected String[] multipleInput;
-
     protected JScrollPane scrollPane;
     protected JTextArea textArea;
     protected JTextField textField;
-
     protected JButton submitButton, copyButton;
-
     protected GridBagLayout layout;
     protected GridBagConstraints c;
-
     protected PanelListener listener;
-
     protected String text;
     protected boolean livePrev;
     protected boolean multiInputs;
 
     protected JCheckBox multiInputBox, livePrevBox;
     protected CheckComboBox checkComboBox, commonComboBox;
-
     protected boolean flagSubmitted;
-    
 
-
+    protected  int posx = 0, posy = 0;
     public Snippets(PanelListener listener, String text, boolean multi, boolean live) {
         super();
         this.listener = listener;
@@ -65,30 +54,26 @@ public abstract class Snippets extends JPanel  {
         this.livePrev = live;
 
     }
-     
-       
-    
-  protected  int posx = 0, posy = 0;
 
     protected abstract void setInterface();
-    
+
     protected abstract void languageInterface();
-    
+
   protected String setOutput(){return null;};///////////virtual method////////////
   protected void commonListener() {};/////////////////virtual method////////////; (overriden) for livePrevBox
-    
-  
+
+
     protected void commonSubmitLisnter() {
-       
+
         textField.addActionListener(e -> {
             if (e.getSource() == textField) {
                 flagSubmitted = true;
             }
 
             commonListener();
-            
+
             SwingUtilities.invokeLater(textField::requestFocusInWindow);
-     
+
             if (e.getSource() == textField)//just to reset (just in case)
             {
                 flagSubmitted = false;
@@ -101,11 +86,11 @@ public abstract class Snippets extends JPanel  {
                 flagSubmitted = true;
             }
 
-           
+
             commonListener();
-            
+
             SwingUtilities.invokeLater(textField::requestFocusInWindow);
-     
+
             if (e.getSource() == submitButton) {
                 flagSubmitted = false;
             }
@@ -146,7 +131,7 @@ public abstract class Snippets extends JPanel  {
 
     protected void firstListen() {
  SwingUtilities.invokeLater(textField::requestFocusInWindow);//in case
-     
+
         if (textField.getText().isEmpty() == false) {//set input if there was
             setOriginalInput(textField.getText());
         } else {
@@ -186,15 +171,15 @@ public abstract class Snippets extends JPanel  {
     public final void componentInit() {
          layout = new GridBagLayout();
         super.setLayout(layout);// super sayian layout
-        
+
         c = new GridBagConstraints();
-        
+
         // Create the text area and text field
         textArea = new CustomTextArea();// display input
         textArea.setEditable(true);
 
         if (text == null)text = "";
-      
+
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
         scrollPane = new JScrollPane(textArea);// scrollpane
@@ -202,15 +187,15 @@ public abstract class Snippets extends JPanel  {
 //////////////////////intialization///////////////////////////////////
 
         textField = new JTextField(text, 25);// take input
-        
+
         submitButton = new JButton("Submit");
-        copyButton = new JButton("Copy");// copy button
+          copyButton = new JButton(" Copy ");// copy button
         multiInputBox = new JCheckBox("Multiple Inputs");
         livePrevBox = new JCheckBox("Live Preview");
 
         livePrevBox.setSelected(livePrev);
         multiInputBox.setSelected(multiInputs);
-        
+
 //////////////////////// components listner//////////////////////////
 
         textField.getDocument().addDocumentListener(new DocumentListener() {//to make time from input to input (for no runtime error)
@@ -260,7 +245,7 @@ public abstract class Snippets extends JPanel  {
 
         livePrevBox.addItemListener((ItemEvent e) -> {
         SwingUtilities.invokeLater(textField::requestFocusInWindow);
-        
+
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 livePrev = true;
                 listener.onLivePreview(livePrev);
@@ -269,14 +254,14 @@ public abstract class Snippets extends JPanel  {
                 // Checkbox is deselected
                 livePrev = false;
                 listener.onLivePreview(livePrev);
-                
+
             }
         });
-        
+
 
         multiInputBox.addItemListener((ItemEvent e) -> {
         SwingUtilities.invokeLater(textField::requestFocusInWindow);
-       
+
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 multiInputs = true;
                 listener.onMultipleInputs(multiInputs);
@@ -291,10 +276,10 @@ public abstract class Snippets extends JPanel  {
 
 
         copyButton.addActionListener(e -> {
-            
+
         SwingUtilities.invokeLater(textField::requestFocusInWindow);
         commonListener();
-        
+
             Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
             if (output != null) {
                 StringSelection selection = new StringSelection(textArea.getText());//copy text in textarea
@@ -302,8 +287,8 @@ public abstract class Snippets extends JPanel  {
             }
 
         });
-        
-        
+
+
         SwingUtilities.invokeLater(textField::requestFocusInWindow);// Set focus to the text field
     }
 
@@ -329,7 +314,7 @@ public abstract class Snippets extends JPanel  {
         c.weighty = weighty;
 
     }
-    
+
     public void showError(String errorWords) {
         JOptionPane.showMessageDialog(this, "error invalid input "+errorWords);
     }
