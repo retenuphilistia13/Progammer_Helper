@@ -13,8 +13,7 @@ import org.programmerhelper.paradigm.language.Java;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 
 import javax.swing.*;
 import javax.swing.UIManager;
@@ -24,60 +23,66 @@ import org.programmerhelper.snippets.paradigm.PanelListener;
 import org.programmerhelper.snippets.paradigm.language.C_Plus_PlusSnippets;
 import org.programmerhelper.snippets.paradigm.language.JavaSnippets;
 
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.ArrayList;
 
 
-public final class ProgrammerHelper extends JFrame implements ActionListener, PanelListener {
+public class ProgrammerHelper extends JFrame implements ActionListener, PanelListener {
     ActionEvent OOPLastAction;
     OOPLanguage OOPLanguage;
     OOPSnippets OOPSnip;
     JMenuBar menuBar;
     JMenu snippetsMenu, languageMenu;
+    JMenu setting;
+    JMenuItem showCheckboxes;
     JMenuItem getSetItem, classItem, mainClass;
     JMenuItem javaItem, cPlusPlusItem;
     boolean flagFirstActivity;
     private final JSONFileHandler fileHandle;
     private final String filePath;
-    private String language,snippet,input;
+    Language Language;
+    private String  snippet,input;
     private boolean multi,livePrev;
     public ProgrammerHelper() {
         // Set up the frame
         setTitle("Programmer Little Helper");
 
         setSize(600, 700);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         // Add a window listener to capture the close event
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                // Call your method here
                 performLastAction();
-
                 // Close the application
                 System.exit(0);
             }
         });
+
         try {
-            // Set the JTattoo look and feel
             UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
         } catch (Exception ignored) {
-            System.out.println("error look and feel ");
+            System.out.println("error initializing look and feel ");
         }
 
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
 
-        for (UIManager.LookAndFeelInfo info: UIManager.getInstalledLookAndFeels()) {
-            System.out.println(info.getName());
-        }
+
 
         menuBar = new JMenuBar();
 
+         setting = new JMenu("Settings");
+
+        showCheckboxes=new JCheckBoxMenuItem("show preferences");
+        showCheckboxes.setSelected(true);
+
+        setting.add(showCheckboxes);
+        menuBar.add(setting);
+
         snippetsMenu = new JMenu("Snippets");
         languageMenu = new JMenu("Language");
+
 
         // Create the menu items
         javaItem = new JRadioButtonMenuItem("Java");
@@ -96,8 +101,10 @@ public final class ProgrammerHelper extends JFrame implements ActionListener, Pa
         fileHandle = new JSONFileHandler();
         fileHandle.readJSONFile(filePath);
 
+        String language;
         //to do make pardaigm in json
         language = fileHandle.getLanguage();
+
         snippet = fileHandle.getSnippet();
         livePrev = fileHandle.getLivePrevBox(); //get value form file
         multi = fileHandle.getMultipleInputBox();
@@ -105,22 +112,24 @@ public final class ProgrammerHelper extends JFrame implements ActionListener, Pa
 
         System.out.println("language: " + language.equals("C++") + " real:" + language);
         String paradigm = ""; //temporary
-        if (language.equals("Java")) {
+        if (language.equals(Language.JAVA.name())) {
             javaItem.setSelected(true);
+            Language= org.programmerhelper.Language.JAVA;
             paradigm = "OOP";
-        } else if (language.equals("C++")) {
+        } else if (language.equals(Language.CPLUSPLUS.name())) {
             cPlusPlusItem.setSelected(true);
+            Language= org.programmerhelper.Language.CPLUSPLUS;
             paradigm = "OOP";
         }
-        //        } else if (language.isBlank()) {
-        //            OOPLanguage = new Java();//intializing
-        //            OOPSnip = new JavaSnippets(OOPLanguage, this, input, multi, livePrev);
-        //            javaItem.setSelected(false);
-        //        } else {
-        //            OOPLanguage = new Java();//intializing
-        //            OOPSnip = new JavaSnippets(OOPLanguage, this, input, multi, livePrev);
-        //            javaItem.setSelected(false);
-        //        }
+                 else if (language.isBlank()) {
+                    OOPLanguage = new Java();//intializing
+                    OOPSnip = new JavaSnippets(OOPLanguage, this, input, multi, livePrev);
+                    javaItem.setSelected(false);
+                } else {
+                    OOPLanguage = new Java();//intializing
+                    OOPSnip = new JavaSnippets(OOPLanguage, this, input, multi, livePrev);
+                    javaItem.setSelected(false);
+                }
         switch (snippet) { //to do
             case "getSetItem" ->
                     getSetItem.setSelected(true);
@@ -172,19 +181,21 @@ public final class ProgrammerHelper extends JFrame implements ActionListener, Pa
         if (javaItem.isSelected() && OOPSnip == null && flagFirstActivity == false) { //one time activation if its saved in a file (extra &&flagFirstActivity==false)
             OOPLanguage = new Java();
 
-            language = OOPLanguage.getLanguageType();
+            language = OOPLanguage.getLanguageType().name();
             OOPSnip = new JavaSnippets(OOPLanguage, this, input, multi, livePrev);
             firstSnippet();
 
         } else if (cPlusPlusItem.isSelected() && OOPSnip == null && flagFirstActivity == false) {
             OOPLanguage = new C_Plus_Plus();
 
-            language = OOPLanguage.getLanguageType();
+            language = OOPLanguage.getLanguageType().name();
             OOPSnip = new C_Plus_PlusSnippets(OOPLanguage, this, input, multi, livePrev);
 
             firstSnippet();
             //  cPlusPlusItem.setSelected(false);
         }
+
+
 
         setVisible(true);
     }
@@ -201,6 +212,8 @@ public final class ProgrammerHelper extends JFrame implements ActionListener, Pa
 
     }
 
+
+
     @Override
 
     public void actionPerformed(ActionEvent e) {
@@ -212,14 +225,10 @@ public final class ProgrammerHelper extends JFrame implements ActionListener, Pa
 
             //check language choice
             if (e.getSource() == javaItem) {
-                //                        System.out.println("");
-                //            System.out.println("/////////// isSelected://///////");
-                //            System.out.println("");
-                //    System.out.println("javaItem isSelected: "+javaItem.isSelected());
-                //        System.out.println("cPlusPlusItem isSelected: "+cPlusPlusItem.isSelected());
+
                 OOPLanguage = new Java();
 
-                language = OOPLanguage.getLanguageType();
+                Language = OOPLanguage.getLanguageType();
 
                 if (!flagFirstActivity) e = handleOOPFirstEvent(e);
 
@@ -230,14 +239,10 @@ public final class ProgrammerHelper extends JFrame implements ActionListener, Pa
                 }
 
             } else if (e.getSource() == cPlusPlusItem) {
-                //            System.out.println("");
-                //            System.out.println("/////////// isSelected://///////");
-                //            System.out.println("");
-                //                System.out.println("javaItem isSelected: "+javaItem.isSelected());
-                //        System.out.println("cPlusPlusItem isSelected: "+cPlusPlusItem.isSelected());
+
                 OOPLanguage = new C_Plus_Plus();
 
-                language = OOPLanguage.getLanguageType();
+                Language = OOPLanguage.getLanguageType();
 
                 if (!flagFirstActivity) e = handleOOPFirstEvent(e);
 
@@ -292,13 +297,13 @@ public final class ProgrammerHelper extends JFrame implements ActionListener, Pa
         //end if
     }
 
-    public void addOOPSnip(String language) {
+    public void addOOPSnip(Language lan) {
 
-        switch (language) {
-            case "Java" -> {System.out.println("java intializing");
+        switch (lan) {
+            case JAVA -> {System.out.println("java intializing");
                 OOPSnip = new JavaSnippets(OOPLanguage, this, input, multi, livePrev);
             }
-            case "C++" -> {System.out.println("c++ intializing");
+            case CPLUSPLUS -> {System.out.println("c++ intializing");
                 OOPSnip = new C_Plus_PlusSnippets(OOPLanguage, this, input, multi, livePrev);
             }
         }
@@ -329,9 +334,11 @@ public final class ProgrammerHelper extends JFrame implements ActionListener, Pa
     public void onMultipleInputs(boolean multi) {
         this.multi = multi;
     }
+
+
     private void performLastAction() {
         //saving propertes
-        fileHandle.updateJSONFile(filePath, language, snippet, input, livePrev, multi);
+        fileHandle.updateJSONFile(filePath, Language, snippet, input, livePrev, multi);
     }
     private ActionListener createLanguageGroupListener() {
         // Initialize and group the menus
@@ -425,5 +432,6 @@ public final class ProgrammerHelper extends JFrame implements ActionListener, Pa
             }
         }
     }
+
 
 }

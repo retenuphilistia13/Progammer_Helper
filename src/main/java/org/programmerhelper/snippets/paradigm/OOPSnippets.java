@@ -1,15 +1,16 @@
 package org.programmerhelper.snippets.paradigm;
 
+import org.programmerhelper.Language;
 import org.programmerhelper.paradigm.OOPLanguage;
 import org.programmerhelper.snippets.paradigm.components.RadioPanel;
-import java.awt.FlowLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
+
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.SwingUtilities;
+import javax.swing.text.*;
 
 
 public abstract class OOPSnippets extends Snippets { //interface (gui)
@@ -26,7 +27,7 @@ public abstract class OOPSnippets extends Snippets { //interface (gui)
     protected String radioType, accessType;
 
     protected ArrayList<JRadioButton> radioButtons1, radioAccessButtons;
-
+    String currentWord;
     protected enum SNIPS {
         GETTERSETTERS, CLASS, MAINCLASS
     }
@@ -134,7 +135,9 @@ public abstract class OOPSnippets extends Snippets { //interface (gui)
                 }
             }
 
-            textArea.setText(output);
+            //textPane.setText(output);
+textPane.setText(output);//maybe modify it later
+
 
             if (!(errorWords.isBlank())) {
                 showError(errorWords);
@@ -150,8 +153,8 @@ public abstract class OOPSnippets extends Snippets { //interface (gui)
                     if (snip == SNIPS.GETTERSETTERS) output = OOPlanguage.createVariable(getOriginalInput(), radioType, accessType);
 
                     output += setOutput();
-                    textArea.setText("");
-                    textArea.setText(output);
+                    textPane.setText("");
+                    textPane.setText(output);
                 } else {
                     if (flagSubmitted) {
                         showError(getOriginalInput());
@@ -165,7 +168,7 @@ public abstract class OOPSnippets extends Snippets { //interface (gui)
 
     protected void OOPInterface(SNIPS snip) {
 
-        commonSubmitLisnter();
+        commonSubmitListener();
 
         ///////////////////// ROW 1 ///////////////////////
         c.anchor = GridBagConstraints.WEST; // Set anchor to the left
@@ -225,6 +228,7 @@ public abstract class OOPSnippets extends Snippets { //interface (gui)
             setComponentProperty(3 + posx, posy, 1, 2, 0, 1);
             add(radioVarPanel, c);
         }
+
 
     }
 

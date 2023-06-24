@@ -1,6 +1,8 @@
 package org.programmerhelper.snippets.paradigm.language;
 
+import org.programmerhelper.Language;
 import org.programmerhelper.paradigm.OOPLanguage;
+import org.programmerhelper.paradigm.language.Java;
 import org.programmerhelper.snippets.paradigm.OOPSnippets;
 import org.programmerhelper.snippets.paradigm.PanelListener;
 import org.programmerhelper.snippets.paradigm.components.CheckComboBox;
@@ -12,18 +14,12 @@ import javax.swing.SwingUtilities;
 
 
 public class JavaSnippets extends OOPSnippets {
-    String[] popularRadios = {
-            "String", "boolean", "int", "float", "double", "char"
-    };
-    String[] classRadios = {
-            "class", "interface", "abstract", "record"
-    };
-    String[] accessModifier = {
-            "public", "private", "protected", "package"
-    };
+    Java java;
     SNIPS snip;
     public JavaSnippets(OOPLanguage l, PanelListener listener, String text, boolean multi, boolean live) {
         super(l, listener, text, multi, live);
+        java=new Java();
+        language=Language.JAVA;
     }
     @Override
     protected void languageInterface() {
@@ -55,10 +51,10 @@ public class JavaSnippets extends OOPSnippets {
 
         if (snip == SNIPS.CLASS || snip == SNIPS.GETTERSETTERS) { //Radio
             if (snip == SNIPS.CLASS) //intialization
-                radioInit(classRadios, accessModifier);
+                radioInit(java.classRadios, java.accessModifierRadios);
 
             else if (snip == SNIPS.GETTERSETTERS)
-                radioInit(popularRadios, accessModifier);
+                radioInit(java.popularRadios, java.accessModifierRadios);
 
             radioListener();
 
@@ -85,11 +81,9 @@ public class JavaSnippets extends OOPSnippets {
                 switch (checkComboBox.getSelectedItem()) {
                     case "Primitive" -> {
                         System.out.println("Primitive");
-                        String[] Primitive = {
-                                "boolean", "byte", "short", "int", "long", "float", "double", "char"
-                        };
+
                         removeRadio1();
-                        radioInit1(Primitive);
+                        radioInit1(java.Primitive);
                         radioListener();
                         radioVarPanel = new RadioPanel(radioButtons1, false); //add to panel
                         add(radioVarPanel, c);
@@ -98,7 +92,7 @@ public class JavaSnippets extends OOPSnippets {
                     case "Popular" -> {
                         System.out.println("Popular");
                         removeRadio1();
-                        radioInit1(popularRadios);
+                        radioInit1(java.popularRadios);
                         radioListener();
                         radioVarPanel = new RadioPanel(radioButtons1, false); //add to panel
                         add(radioVarPanel, c);
@@ -106,10 +100,8 @@ public class JavaSnippets extends OOPSnippets {
 
                     case "Wrapper" -> {
                         removeRadio1();
-                        String[] Wrapper = {
-                                "Boolean", "Byte", "Short", "Integer", "Long", "Float", "Double", "Character"
-                        };
-                        radioInit1(Wrapper);
+
+                        radioInit1(java.Wrapper);
                         radioListener();
                         radioVarPanel = new RadioPanel(radioButtons1, false); //add to panel
                         add(radioVarPanel, c);

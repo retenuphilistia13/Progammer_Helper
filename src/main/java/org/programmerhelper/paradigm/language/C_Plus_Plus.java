@@ -1,6 +1,7 @@
 package org.programmerhelper.paradigm.language;
 
 
+import org.programmerhelper.Language;
 import org.programmerhelper.paradigm.OOPLanguage;
 import java.util.HashSet;
 import java.util.Set;
@@ -9,7 +10,7 @@ import java.util.Set;
 public class C_Plus_Plus extends OOPLanguage{
 
 	public C_Plus_Plus() {
-        super("C++");	
+        super(Language.CPLUSPLUS);
 	}
         
   
@@ -74,4 +75,8 @@ public class C_Plus_Plus extends OOPLanguage{
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
+	@Override
+	public Set<String> getReservedWords() {
+		return null;
+	}
 }

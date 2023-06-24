@@ -1,37 +1,34 @@
 package org.programmerhelper.snippets.paradigm;
 
+import org.programmerhelper.Language;
+import org.programmerhelper.paradigm.language.Java;
 import org.programmerhelper.snippets.paradigm.components.CheckComboBox;
+import org.programmerhelper.snippets.paradigm.components.JPane;
 import org.programmerhelper.snippets.paradigm.language.JavaSnippets;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import java.awt.*;
 
-import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
-import javax.swing.Timer;
+import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.Style;
+import javax.swing.text.StyledDocument;
 
-public abstract class Snippets extends JPanel  {
+public abstract class Snippets extends JPanel implements ReservedWordsProvider {
+
     protected String originalInput;
     protected String output;
     protected String[] multipleInput;
     protected JScrollPane scrollPane;
-    protected JTextArea textArea;
+    protected JTextPane textPane;
     protected JTextField textField;
     protected JButton submitButton, copyButton;
     protected GridBagLayout layout;
@@ -45,6 +42,9 @@ public abstract class Snippets extends JPanel  {
     protected CheckComboBox checkComboBox, commonComboBox;
     protected boolean flagSubmitted;
 
+    protected Language language;
+
+    private Java java;
     protected  int posx = 0, posy = 0;
     public Snippets(PanelListener listener, String text, boolean multi, boolean live) {
         super();
@@ -52,6 +52,7 @@ public abstract class Snippets extends JPanel  {
         this.text = text;
         this.multiInputs = multi;
         this.livePrev = live;
+
 
     }
 
@@ -63,7 +64,7 @@ public abstract class Snippets extends JPanel  {
   protected void commonListener() {};/////////////////virtual method////////////; (overriden) for livePrevBox
 
 
-    protected void commonSubmitLisnter() {
+    protected void commonSubmitListener() {
 
         textField.addActionListener(e -> {
             if (e.getSource() == textField) {
@@ -86,7 +87,6 @@ public abstract class Snippets extends JPanel  {
                 flagSubmitted = true;
             }
 
-
             commonListener();
 
             SwingUtilities.invokeLater(textField::requestFocusInWindow);
@@ -96,7 +96,26 @@ public abstract class Snippets extends JPanel  {
             }
         });
     }
+    @Override
+    public Set<String> getReservedWords() {
+        ReservedWordsProvider reservedWordsProvider;
 
+        switch (language){
+            case JAVA -> {reservedWordsProvider = new Java();}
+            default -> {reservedWordsProvider = new Java();}
+        }
+        return reservedWordsProvider.getReservedWords();
+    }
+
+
+    private boolean containsWord(Set<String> a, String word) {
+        for (String str : a) {
+            if (str.equals(word)) {
+                return true;
+            }
+        }
+        return false;
+    }
     protected void livePrevListener() {//live listener
 
         textField.getDocument().addDocumentListener(new DocumentListener() {
@@ -138,9 +157,9 @@ public abstract class Snippets extends JPanel  {
             return;
         }
 
-        if ((textArea.getText().isEmpty()) && (!(textField.getText().isEmpty()))) {//make an ouput
+        if ((textPane.getText().isEmpty()) && (!(textField.getText().isEmpty()))) {//make an ouput
             commonListener();
-            textArea.setText(output);
+            textPane.setText(output);
         }
     }
 
@@ -156,40 +175,42 @@ public abstract class Snippets extends JPanel  {
         multiInputBox.setSelected(m);
     }
 
-    static class CustomTextArea extends JTextArea {//scroll pane be veticle not horizontal
 
-        @Override
-        public void scrollRectToVisible(java.awt.Rectangle aRect) {
-            // Override scrollRectToVisible() to prevent automatic scrolling
-            // when typing at a specific line
-            if (getParent() instanceof JScrollPane scrollPane) {
-                scrollPane.getVerticalScrollBar().setValue(scrollPane.getVerticalScrollBar().getValue());
-            }
-        }
-    }
 
     public final void componentInit() {
          layout = new GridBagLayout();
-        super.setLayout(layout);// super sayian layout
+        super.setLayout(layout);
 
         c = new GridBagConstraints();
+        // Create the text Pane and text field
+        Set<String>a=getReservedWords();
+        String[] Default = a.toArray(new String[a.size()]);
 
-        // Create the text area and text field
-        textArea = new CustomTextArea();// display input
-        textArea.setEditable(true);
+        switch (language){
+            case JAVA -> {
+                 java=new Java();
+                textPane = new JPane(java.accessModifierRadios,java.getDataType(),java.classRadios,Default);// display input
+            }
+            default -> {
+                textPane = new JPane();
+            }
+        }
+
+
+        textPane.setEditable(true);
 
         if (text == null)text = "";
-
-        textArea.setLineWrap(true);
-        textArea.setWrapStyleWord(true);
-        scrollPane = new JScrollPane(textArea);// scrollpane
+        
+        
+        scrollPane = new JScrollPane(textPane);// scrollpane
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
 //////////////////////intialization///////////////////////////////////
 
         textField = new JTextField(text, 25);// take input
 
         submitButton = new JButton("Submit");
-          copyButton = new JButton(" Copy ");// copy button
+        copyButton = new JButton(" Copy ");// copy button
         multiInputBox = new JCheckBox("Multiple Inputs");
         livePrevBox = new JCheckBox("Live Preview");
 
@@ -248,14 +269,12 @@ public abstract class Snippets extends JPanel  {
 
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 livePrev = true;
-                listener.onLivePreview(livePrev);
-                //no need to update output commonListener();
+                commonListener();
             } else if(e.getStateChange() == ItemEvent.DESELECTED){
-                // Checkbox is deselected
                 livePrev = false;
-                listener.onLivePreview(livePrev);
-
+                commonListener();
             }
+            listener.onLivePreview(livePrev);
         });
 
 
@@ -264,27 +283,27 @@ public abstract class Snippets extends JPanel  {
 
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 multiInputs = true;
-                listener.onMultipleInputs(multiInputs);
                 commonListener();//update output
             } else if(e.getStateChange() == ItemEvent.DESELECTED) {
                 // Checkbox is deselected
                 multiInputs = false;
-                listener.onMultipleInputs(multiInputs);
                 commonListener();
             }
+            listener.onMultipleInputs(multiInputs);
         });
 
 
         copyButton.addActionListener(e -> {
 
         SwingUtilities.invokeLater(textField::requestFocusInWindow);
-        commonListener();
-
+        
             Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
             if (output != null) {
-                StringSelection selection = new StringSelection(textArea.getText());//copy text in textarea
+                StringSelection selection = new StringSelection(textPane.getText());//copy text in textarea
                 clipboard.setContents(selection, null);
             }
+
+            //commonListener();
 
         });
 

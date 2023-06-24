@@ -1,5 +1,6 @@
 package org.programmerhelper.snippets.paradigm.language;
 
+import org.programmerhelper.Language;
 import org.programmerhelper.paradigm.OOPLanguage;
 import org.programmerhelper.snippets.paradigm.OOPSnippets;
 import org.programmerhelper.snippets.paradigm.PanelListener;
@@ -11,6 +12,7 @@ public class C_Plus_PlusSnippets extends OOPSnippets {
 
     public C_Plus_PlusSnippets(OOPLanguage l, PanelListener listener, String text, boolean multi, boolean live) {
         super(l, listener, text, multi, live);
+        language= Language.CPLUSPLUS;
     }
     SNIPS snip;
 

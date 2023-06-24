@@ -4,7 +4,10 @@
  */
 package org.programmerhelper.paradigm.language;
 
+import org.programmerhelper.Language;
 import org.programmerhelper.paradigm.PLanguage;
+
+import java.util.Set;
 
 /**
  *
@@ -13,7 +16,7 @@ import org.programmerhelper.paradigm.PLanguage;
 public class C extends PLanguage {
 
     public C(String language) {
-        super(language);
+        super(Language.CPLUSPLUS);
     }
 
     @Override
@@ -30,5 +33,9 @@ public class C extends PLanguage {
     public boolean isReserved(String userInput) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-    
+
+    @Override
+    public Set<String> getReservedWords() {
+        return null;
+    }
 }

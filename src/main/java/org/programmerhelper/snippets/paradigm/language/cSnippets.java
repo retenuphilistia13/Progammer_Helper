@@ -82,7 +82,7 @@ public class cSnippets extends Snippets{
     @Override
     protected void setInterface() {
     componentInit();
-    commonSubmitLisnter();
+    commonSubmitListener();
     
     livePrevListener();//live Preview Listener
     

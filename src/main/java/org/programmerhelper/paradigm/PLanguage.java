@@ -1,12 +1,15 @@
 package org.programmerhelper.paradigm;
 
-public abstract class PLanguage {//Programing Languages
+import org.programmerhelper.Language;
+import org.programmerhelper.snippets.paradigm.ReservedWordsProvider;
 
+public abstract class PLanguage implements ReservedWordsProvider {//Programing Languages
+    Language language;
     public abstract Boolean isVariableValid(String userInput);
 
-    private String language;
+//    private String language;
 
-    public PLanguage(String language){
+    public PLanguage(Language language){
         this.language=language;
     }
 //public abstract Boolean isVariableValid(String userInput);
@@ -25,13 +28,13 @@ public abstract class PLanguage {//Programing Languages
         return str;
     }
 
-    protected void setLanguageType(String languageType) {
+    protected void setLanguageType(Language languageType) {
 
         this.language = languageType;
 
     }
 
-    public String getLanguageType() {
+    public Language getLanguageType() {
 
         return language;
 

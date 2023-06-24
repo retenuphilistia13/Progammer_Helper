@@ -1,9 +1,11 @@
 package org.programmerhelper.paradigm;
 
+import org.programmerhelper.Language;
+
 public abstract class OOPLanguage extends PLanguage {
 
-    public OOPLanguage(String language) {
-        super(language);
+    public OOPLanguage(Language lan) {
+        super(lan);
     }
 
 

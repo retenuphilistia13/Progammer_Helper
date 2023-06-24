@@ -9,4 +9,5 @@ public interface PanelListener {
     void onTextSubmitted(String text);
     void onLivePreview(boolean live);
     void onMultipleInputs(boolean multi);
+
 }

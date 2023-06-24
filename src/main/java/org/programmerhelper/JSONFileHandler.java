@@ -27,6 +27,7 @@ public class JSONFileHandler {
 
     private String language;
 
+
     private String snippet;
 
     public void setSnippet(String snippet) {
@@ -101,7 +102,7 @@ public class JSONFileHandler {
                 '}';
     }
 
-    public void updateJSONFile(String filePath, String language1, String snippet1, String inputText1, boolean livePrevBox1, boolean multipleInputBox1) {
+    public void updateJSONFile(String filePath, Language language1, String snippet1, String inputText1, boolean livePrevBox1, boolean multipleInputBox1) {
         try {
             JSONObject jsonObject;
             try ( // Read the existing JSON file
@@ -113,9 +114,9 @@ public class JSONFileHandler {
             System.out.println(this);
 
             // Update the JSON data
-            if (!(language1.equals(language))) {
-                jsonObject.put("language", language1);
-                language = language1;
+            if (!(language1.name().equals(language))) {
+                jsonObject.put("language", language1.name());
+                language = language1.name();
             }
 
             if (!(snippet1.equals(snippet))) {

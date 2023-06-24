@@ -1,10 +1,12 @@
 package org.programmerhelper.paradigm.language;
 
+import org.programmerhelper.Language;
 import org.programmerhelper.paradigm.OOPLanguage;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Stream;
 import javax.swing.text.Highlighter;
 
 public class Java extends OOPLanguage {
@@ -14,13 +16,44 @@ public class Java extends OOPLanguage {
         "finally", "float", "for", "goto", "if", "implements", "import", "instanceof", "int", "interface", "long",
         "native", "new", "null", "package", "private", "protected", "public", "return", "short", "static",
         "strictfp", "super", "switch", "synchronized", "this", "throw", "throws", "transient", "true", "try",
-        "void", "volatile", "while"};
+        "void", "volatile", "while","String"};
+
+    public String[] popularRadios = {
+            "String", "boolean", "int", "float", "double", "char"
+    };
+
+    public String[] Primitive = {
+            "boolean", "byte", "short", "int", "long", "float", "double", "char"
+    };
+
+    public String[] Wrapper = {
+            "Boolean", "Byte", "Short", "Integer", "Long", "Float", "Double", "Character"
+    };
+
+    public String[] getDataType(){
+
+        String[] combined = Stream.concat(Stream.concat(Arrays.stream(popularRadios), Arrays.stream(Primitive)), Arrays.stream(Wrapper))
+                .toArray(String[]::new);
+
+        // Print the combined array
+        for (String item : combined) {
+            System.out.println(item);
+        }
+    return combined;
+    }
+    public String[] classRadios = {
+            "class", "interface", "abstract", "record"
+    };
+    public String[] accessModifierRadios = {
+            "public", "private", "protected", "package"
+    };
 
     static final char[] illegalChar = {'~', '!', '@', '#', '%', '^', '&', '*', '(', ')', '-', '+', '=', '{', '}', '[',
         ']', '|', '\\', ':', ';', '"', '\'', '<', '>', ',', '.', '?', '/'};
 
     public Java() {
-super("Java");
+
+super(Language.JAVA);
 
     }
 
@@ -85,10 +118,25 @@ super("Java");
     @Override
     public String createMainClass(String userInput, String type, String accessModifier) {
 
-        String modifiedInput = capitalizeFirstChar(userInput);
+        //String modifiedInput = capitalizeFirstChar(userInput);
 
-        return "   public class " + modifiedInput + " { \n\t\n\t\n   "
-                + "public static void main(String args[]){\n\t\n   System.out.println(\"\");\n    }\n }\n";
+//        return "   public class " + userInput + " { \n\t\n\t\n   "
+//                + "public static void main(String args[]){\n\t\n   System.out.println(\"\");\n    }\n }\n";
+        return """
+                        """  + "\n" +
+                "  public class " + userInput + " {"+
+  	"\n" +
+                "\n" +
+                "      "
+                + "public static void main(String args[])"+"{"+ """
+                 
+                 
+                 """
++"     System.out.println(\"\");"+"""
+                 
+    """+"     }"+"""
+    """+
+  "\n   }\n";
 
     }
 
@@ -141,4 +189,14 @@ super("Java");
 
     }
 
+    @Override
+    public Set<String> getReservedWords() {
+        // Define your array of reserved words
+
+        // Create a HashSet and add the reserved words from the array
+        Set<String> reservedWords = new HashSet<>();
+        Collections.addAll(reservedWords, reservedKeywords);
+
+        return reservedWords;
+    }
 }
