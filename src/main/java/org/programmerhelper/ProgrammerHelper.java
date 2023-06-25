@@ -30,7 +30,10 @@ import java.util.ArrayList;
 public class ProgrammerHelper extends JFrame implements ActionListener, PanelListener {
     ActionEvent OOPLastAction;
     OOPLanguage OOPLanguage;
-    OOPSnippets OOPSnip;
+    //OOPSnippets OOPSnip;
+
+    JavaSnippets javaSnip;
+    C_Plus_PlusSnippets CPlusPlusSnip;
     JMenuBar menuBar;
     JMenu snippetsMenu, languageMenu;
     JMenu setting;
@@ -41,8 +44,11 @@ public class ProgrammerHelper extends JFrame implements ActionListener, PanelLis
     private final JSONFileHandler fileHandle;
     private final String filePath;
     Language Language;
+    Language prevLanguage;
     private String  snippet,input;
     private boolean multi,livePrev;
+
+    boolean isSnip;
     public ProgrammerHelper() {
         // Set up the frame
         setTitle("Programmer Little Helper");
@@ -98,6 +104,7 @@ public class ProgrammerHelper extends JFrame implements ActionListener, PanelLis
         ///////assigning, reading fro file////////
         File f = new File("commonPrefrences.json");
         filePath = f.getAbsolutePath(); ///get absolute path
+
         fileHandle = new JSONFileHandler();
         fileHandle.readJSONFile(filePath);
 
@@ -114,20 +121,22 @@ public class ProgrammerHelper extends JFrame implements ActionListener, PanelLis
         String paradigm = ""; //temporary
         if (language.equals(Language.JAVA.name())) {
             javaItem.setSelected(true);
-            Language= org.programmerhelper.Language.JAVA;
+            Language= Language.JAVA;
+            prevLanguage=Language;
             paradigm = "OOP";
         } else if (language.equals(Language.CPLUSPLUS.name())) {
             cPlusPlusItem.setSelected(true);
-            Language= org.programmerhelper.Language.CPLUSPLUS;
+            Language= Language.CPLUSPLUS;
+            prevLanguage=Language;
             paradigm = "OOP";
         }
                  else if (language.isBlank()) {
                     OOPLanguage = new Java();//intializing
-                    OOPSnip = new JavaSnippets(OOPLanguage, this, input, multi, livePrev);
+            javaSnip = new JavaSnippets(OOPLanguage, this, input, multi, livePrev);
                     javaItem.setSelected(false);
                 } else {
                     OOPLanguage = new Java();//intializing
-                    OOPSnip = new JavaSnippets(OOPLanguage, this, input, multi, livePrev);
+            javaSnip = new JavaSnippets(OOPLanguage, this, input, multi, livePrev);
                     javaItem.setSelected(false);
                 }
         switch (snippet) { //to do
@@ -178,21 +187,22 @@ public class ProgrammerHelper extends JFrame implements ActionListener, PanelLis
 
         flagFirstActivity = false;
         //////////activate first snip////////
-        if (javaItem.isSelected() && OOPSnip == null && flagFirstActivity == false) { //one time activation if its saved in a file (extra &&flagFirstActivity==false)
+        if (javaItem.isSelected() && javaSnip == null && flagFirstActivity == false) { //one time activation if its saved in a file (extra &&flagFirstActivity==false)
             OOPLanguage = new Java();
-
+            isSnip=false;
             language = OOPLanguage.getLanguageType().name();
-            OOPSnip = new JavaSnippets(OOPLanguage, this, input, multi, livePrev);
+            javaSnip = new JavaSnippets(OOPLanguage, this, input, multi, livePrev);
             firstSnippet();
+            addToFrame();
 
-        } else if (cPlusPlusItem.isSelected() && OOPSnip == null && flagFirstActivity == false) {
+        } else if (cPlusPlusItem.isSelected() && CPlusPlusSnip == null && flagFirstActivity == false) {
             OOPLanguage = new C_Plus_Plus();
-
+            isSnip=false;
             language = OOPLanguage.getLanguageType().name();
-            OOPSnip = new C_Plus_PlusSnippets(OOPLanguage, this, input, multi, livePrev);
+            CPlusPlusSnip = new C_Plus_PlusSnippets(OOPLanguage, this, input, multi, livePrev);
 
             firstSnippet();
-            //  cPlusPlusItem.setSelected(false);
+            addToFrame();
         }
 
 
@@ -225,7 +235,8 @@ public class ProgrammerHelper extends JFrame implements ActionListener, PanelLis
 
             //check language choice
             if (e.getSource() == javaItem) {
-
+                isSnip=false;
+                prevLanguage=Language;
                 OOPLanguage = new Java();
 
                 Language = OOPLanguage.getLanguageType();
@@ -239,7 +250,8 @@ public class ProgrammerHelper extends JFrame implements ActionListener, PanelLis
                 }
 
             } else if (e.getSource() == cPlusPlusItem) {
-
+                isSnip=false;
+                prevLanguage=Language;
                 OOPLanguage = new C_Plus_Plus();
 
                 Language = OOPLanguage.getLanguageType();
@@ -248,7 +260,7 @@ public class ProgrammerHelper extends JFrame implements ActionListener, PanelLis
 
                 if (OOPLastAction != null) { //lastAction after is setted
                     if (OOPLastAction.getSource() == getSetItem || OOPLastAction.getSource() == classItem || OOPLastAction.getSource() == mainClass) { //set action (save)if another oop items are selected
-                        e = OOPLastAction;
+                         e = OOPLastAction;
                     }
                 }
 
@@ -257,38 +269,51 @@ public class ProgrammerHelper extends JFrame implements ActionListener, PanelLis
             if (e.getSource() == getSetItem) { //common between c++ and java
                 snippet = "getSetItem";
 
-                removeFromFrame(OOPSnip);
 
-                addOOPSnip(OOPLanguage.getLanguageType()); //create new panel (must do)
-                OOPSnip.gettersSetters(); //assign snippets Jpanel
-                addToFrame(OOPSnip);
+                removeFromFrame();
+                isSnip=true;
+
+                addOOPSnip(Language); //create new panel (must do)
+                firstSnippet(); //assign snippets Jpanel
+                addToFrame();
 
             } else if (e.getSource() == classItem) {
                 snippet = "classItem";
 
-                removeFromFrame(OOPSnip);
 
-                addOOPSnip(OOPLanguage.getLanguageType()); // addOOPSnip(Language);//create new panel (must do)
-                OOPSnip.createClass();
+                removeFromFrame();
+                isSnip=true;
 
-                addToFrame(OOPSnip);
+                addOOPSnip(Language); // addOOPSnip(Language);//create new panel (must do)
+                firstSnippet();
+
+                addToFrame();
 
             } else if (e.getSource() == mainClass) {
                 snippet = "mainClass";
 
-                removeFromFrame(OOPSnip);
 
-                addOOPSnip(OOPLanguage.getLanguageType()); //  addOOPSnip(Language);
-                OOPSnip.createMainClass();
+                removeFromFrame();
+                isSnip=true;
+                addOOPSnip(Language); //  addOOPSnip(Language);
+                firstSnippet();
 
-                addToFrame(OOPSnip);
+                addToFrame();
 
             }
 
             if (e.getSource() == getSetItem || e.getSource() == classItem || e.getSource() == mainClass) { //set Text when entering from panel to panel
-                OOPSnip.setText(input);
-                OOPSnip.setPrevBox(livePrev);
-                OOPSnip.setMultipleInputs(multi);
+                switch (Language){
+                    case JAVA -> {
+                        javaSnip.setText(input);
+                        javaSnip.setPrevBox(livePrev);
+                        javaSnip.setMultipleInputs(multi);}
+                    case CPLUSPLUS -> {
+                        CPlusPlusSnip.setText(input);
+                        CPlusPlusSnip.setPrevBox(livePrev);
+                        CPlusPlusSnip.setMultipleInputs(multi);
+                    }
+                }
                 System.out.println("text :" + input);
             }
 
@@ -301,21 +326,58 @@ public class ProgrammerHelper extends JFrame implements ActionListener, PanelLis
 
         switch (lan) {
             case JAVA -> {System.out.println("java intializing");
-                OOPSnip = new JavaSnippets(OOPLanguage, this, input, multi, livePrev);
+                javaSnip = new JavaSnippets(OOPLanguage, this, input, multi, livePrev);
             }
             case CPLUSPLUS -> {System.out.println("c++ intializing");
-                OOPSnip = new C_Plus_PlusSnippets(OOPLanguage, this, input, multi, livePrev);
+                CPlusPlusSnip = new C_Plus_PlusSnippets(OOPLanguage, this, input, multi, livePrev);
             }
         }
 
     }
-    public void addToFrame(JPanel panel) {
-        getContentPane().add(panel);
+    public void addToFrame() {
+        switch (Language){
+            case JAVA -> {  getContentPane().add(javaSnip);}
+            case CPLUSPLUS -> { getContentPane().add(CPlusPlusSnip);}
+        }
+
         revalidate();
         repaint();
     }
-    public void removeFromFrame(JPanel panel) {
-        remove(panel);
+    public void removeFromFrame() {
+
+        System.out.println("\n\n");
+        System.out.println("isSnip "+isSnip+"\n");
+        System.out.println("prevLanguage "+prevLanguage);
+        System.out.println("Language "+Language);
+
+Language lan;
+
+        if(isSnip==false){
+            lan=prevLanguage;
+            System.out.println("prevlanguage excuted");
+        }else if(isSnip==true){
+            System.out.println("language excuted");
+            lan=Language;
+        }else {
+            System.out.println("what language to remove?");
+            lan=Language;
+        }
+
+        switch (lan){//need to fix later the logic(scale up for other language) suggetion take previous language instead of current
+            case JAVA -> {System.out.println(" java Snip option");
+                if(javaSnip!=null) {
+                    remove(javaSnip);
+                    System.out.println("removed java Snip");
+                }
+            }
+            case CPLUSPLUS -> { System.out.println("CPlusPlusSnip called ");   if(CPlusPlusSnip!=null) {
+                System.out.println("removed CPlusPlusSnip ");                remove(CPlusPlusSnip);
+            }}
+        }
+
+
+        System.out.println("\n\n");
+
         revalidate();
         repaint();
     }
@@ -335,6 +397,84 @@ public class ProgrammerHelper extends JFrame implements ActionListener, PanelLis
         this.multi = multi;
     }
 
+
+
+    public void firstSnippet() {
+        switch (Language) {
+            case JAVA -> {
+                switch (snippet) {
+                    case "getSetItem" -> {
+                        javaSnip.gettersSetters();
+                    }
+
+                    case "mainClass" -> {
+                        javaSnip.createMainClass();
+                    }
+
+                    case "classItem" -> {
+                        javaSnip.createClass();
+                    }
+
+                    default -> {
+                        System.out.print("snippet default " + snippet);
+                        javaSnip.createClass();
+                    }
+                }
+
+
+            }
+            case CPLUSPLUS -> {
+                switch (snippet) {
+                    case "getSetItem" -> {
+                        CPlusPlusSnip.gettersSetters();
+                    }
+
+                    case "mainClass" -> {
+                        CPlusPlusSnip.createMainClass();
+                    }
+
+                    case "classItem" -> {
+                        CPlusPlusSnip.createClass();
+                    }
+
+                    default -> {
+                        System.out.print("snippet default " + snippet);
+                        CPlusPlusSnip.createClass();
+                    }
+                }
+
+
+            }
+
+                }
+            }
+
+
+
+
+
+    public ActionEvent handleOOPFirstEvent(ActionEvent e) {
+        switch (snippet) {
+            case "getSetItem" -> {
+                return new ActionEvent(getSetItem, e.getID(), e.getActionCommand(), e.getModifiers());
+            }
+
+            case "mainClass" -> {
+                return new ActionEvent(mainClass, e.getID(), e.getActionCommand(), e.getModifiers());
+            }
+
+            case "classItem" -> {
+                return new ActionEvent(classItem, e.getID(), e.getActionCommand(), e.getModifiers());
+            }
+
+            default -> {
+                System.out.print("snippet default " + snippet);
+                return new ActionEvent(classItem, e.getID(), e.getActionCommand(), e.getModifiers());
+            }
+        }
+
+
+    }
 
     private void performLastAction() {
         //saving propertes
@@ -384,54 +524,12 @@ public class ProgrammerHelper extends JFrame implements ActionListener, PanelLis
             // Update the selected state of all menu items
             for (JMenuItem snips: snipList) {
                 if (snips == selectedMenuItem) snips.setSelected(true);
-                 else snips.setSelected(false);
+                else snips.setSelected(false);
             }
 
         };
     }
 
-    public void firstSnippet() {
-        switch (snippet) {
-            case "getSetItem" -> {
-                OOPSnip.gettersSetters();
-            }
-
-            case "mainClass" -> {
-                OOPSnip.createMainClass();
-            }
-
-            case "classItem" -> {
-                OOPSnip.createClass();
-            }
-
-            default -> {
-                System.out.print("snippet default " + snippet);OOPSnip.createClass();
-            }
-        }
-
-        addToFrame(OOPSnip);
-    }
-
-    public ActionEvent handleOOPFirstEvent(ActionEvent e) {
-        switch (snippet) {
-            case "getSetItem" -> {
-                return new ActionEvent(getSetItem, e.getID(), e.getActionCommand(), e.getModifiers());
-            }
-
-            case "mainClass" -> {
-                return new ActionEvent(mainClass, e.getID(), e.getActionCommand(), e.getModifiers());
-            }
-
-            case "classItem" -> {
-                return new ActionEvent(classItem, e.getID(), e.getActionCommand(), e.getModifiers());
-            }
-
-            default -> {
-                System.out.print("snippet default " + snippet);
-                return new ActionEvent(classItem, e.getID(), e.getActionCommand(), e.getModifiers());
-            }
-        }
-    }
 
 
 }

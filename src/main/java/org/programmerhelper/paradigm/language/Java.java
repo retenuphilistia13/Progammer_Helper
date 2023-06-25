@@ -35,10 +35,6 @@ public class Java extends OOPLanguage {
         String[] combined = Stream.concat(Stream.concat(Arrays.stream(popularRadios), Arrays.stream(Primitive)), Arrays.stream(Wrapper))
                 .toArray(String[]::new);
 
-        // Print the combined array
-        for (String item : combined) {
-            System.out.println(item);
-        }
     return combined;
     }
     public String[] classRadios = {
