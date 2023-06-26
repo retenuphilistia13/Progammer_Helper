@@ -1,5 +1,6 @@
 package org.programmerhelper.snippets.paradigm;
 
+
 import org.programmerhelper.Language;
 import org.programmerhelper.paradigm.language.Java;
 import org.programmerhelper.snippets.paradigm.components.CheckComboBox;
@@ -19,8 +20,6 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
-import javax.swing.text.Style;
-import javax.swing.text.StyledDocument;
 
 public abstract class Snippets extends JPanel implements ReservedWordsProvider {
 
@@ -108,14 +107,7 @@ public abstract class Snippets extends JPanel implements ReservedWordsProvider {
     }
 
 
-    private boolean containsWord(Set<String> a, String word) {
-        for (String str : a) {
-            if (str.equals(word)) {
-                return true;
-            }
-        }
-        return false;
-    }
+
     protected void livePrevListener() {//live listener
 
         textField.getDocument().addDocumentListener(new DocumentListener() {
@@ -161,6 +153,8 @@ public abstract class Snippets extends JPanel implements ReservedWordsProvider {
             commonListener();
             textPane.setText(output);
         }
+
+
     }
 
     public void setText(String t) {
@@ -269,10 +263,10 @@ public abstract class Snippets extends JPanel implements ReservedWordsProvider {
 
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 livePrev = true;
-                commonListener();
+                //commonListener();
             } else if(e.getStateChange() == ItemEvent.DESELECTED){
                 livePrev = false;
-                commonListener();
+                //commonListener();
             }
             listener.onLivePreview(livePrev);
         });
@@ -287,7 +281,7 @@ public abstract class Snippets extends JPanel implements ReservedWordsProvider {
             } else if(e.getStateChange() == ItemEvent.DESELECTED) {
                 // Checkbox is deselected
                 multiInputs = false;
-                commonListener();
+//                commonListener();
             }
             listener.onMultipleInputs(multiInputs);
         });
@@ -303,12 +297,46 @@ public abstract class Snippets extends JPanel implements ReservedWordsProvider {
                 clipboard.setContents(selection, null);
             }
 
-            //commonListener();
+
 
         });
 
 
         SwingUtilities.invokeLater(textField::requestFocusInWindow);// Set focus to the text field
+    }
+    protected JPanel panelButtonContainer;
+    protected void panelButtonInit( boolean swapSubmitButton){
+        panelButtonContainer =new JPanel(new FlowLayout(FlowLayout.LEFT));
+        //intialize row2 buttons
+
+        c.fill = GridBagConstraints.NONE;
+
+if(swapSubmitButton) {
+    panelButtonContainer.add(copyButton);
+    panelButtonContainer.add(submitButton);
+}else if(!swapSubmitButton){
+    panelButtonContainer.add(submitButton);
+    panelButtonContainer.add(copyButton);
+
+}
+
+
+
+    }
+
+    JPanel checkBoxContainer ;
+    protected void panelCheckBoxContainerInit(){
+        checkBoxContainer =new JPanel(new FlowLayout(FlowLayout.LEFT));
+
+        c.anchor = GridBagConstraints.WEST; // Set anchor to the left
+        c.fill = GridBagConstraints.WEST;
+
+
+        checkBoxContainer.add(multiInputBox);
+        checkBoxContainer.add(livePrevBox);
+
+
+
     }
 
     public void setOriginalInput(String originalInput) {

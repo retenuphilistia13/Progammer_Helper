@@ -1,21 +1,23 @@
 package org.programmerhelper.snippets.paradigm;
 
-import org.programmerhelper.Language;
 import org.programmerhelper.paradigm.OOPLanguage;
+import org.programmerhelper.paradigm.PLanguage;
 import org.programmerhelper.snippets.paradigm.components.RadioPanel;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
-import javax.swing.JPanel;
+import java.util.Arrays;
 import javax.swing.JRadioButton;
 import javax.swing.SwingUtilities;
-import javax.swing.text.*;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.StyledDocument;
 
 
 public abstract class OOPSnippets extends Snippets { //interface (gui)
     protected RadioPanel radioVarPanel, radioAccessModifier;
 
+    String output2;
     protected OOPLanguage OOPlanguage;
 
     public abstract void gettersSetters();
@@ -27,16 +29,18 @@ public abstract class OOPSnippets extends Snippets { //interface (gui)
     protected String radioType, accessType;
 
     protected ArrayList<JRadioButton> radioButtons1, radioAccessButtons;
-    String currentWord;
-    protected enum SNIPS {
-        GETTERSETTERS, CLASS, MAINCLASS
-    }
 
     public OOPSnippets(OOPLanguage language, PanelListener listener, String text, boolean multi, boolean live) {
         super(listener, text, multi, live);
         this.OOPlanguage = language;
         this.flagSubmitted = false;
     }
+
+
+    protected enum SNIPS {
+        GETTERSETTERS, CLASS, MAINCLASS
+    }
+
 
     protected void radioListener() {
 
@@ -47,7 +51,7 @@ public abstract class OOPSnippets extends Snippets { //interface (gui)
                 JRadioButton selectedButton = (JRadioButton) e.getSource();
                 radioType = selectedButton.getText();
 
-                if (e.getSource() == radio) commonListener(); //if any radio in that group it will update the ouput
+                if (e.getSource() == radio&&livePrev) commonListener(); //if any radio in that group it will update the ouput
             });
 
         }
@@ -59,7 +63,7 @@ public abstract class OOPSnippets extends Snippets { //interface (gui)
                 JRadioButton selectedButton = (JRadioButton) e.getSource();
                 accessType = selectedButton.getText();
 
-                if (e.getSource() == radio) commonListener();
+                if (e.getSource() == radio&&livePrev) commonListener();
             });
 
         }
@@ -101,10 +105,17 @@ public abstract class OOPSnippets extends Snippets { //interface (gui)
         }
 
         if (submitButton.isSelected()) output = ""; //clear old output
+
         if (multiInputBox.isSelected() && multiInputBox != null && !textField.getText().isEmpty()) { //multiple Inputs
+
             setOriginalInput(textField.getText());
 
-            multipleInput = OOPlanguage.splitInput(getOriginalInput());
+            multipleInput = OOPlanguage.splitInput(getOriginalInput());//splitting words
+
+            multipleInput = Arrays.stream(multipleInput)//get unique
+                    .distinct()
+                    .toArray(String[]::new);
+
             boolean flag;
 
             gettersSettersMultiVariable(snip);
@@ -135,8 +146,24 @@ public abstract class OOPSnippets extends Snippets { //interface (gui)
                 }
             }
 
-            //textPane.setText(output);
-textPane.setText(output);//maybe modify it later
+            //textPane.setText(""); //maybe modify it later
+textPane.setText(output);
+
+//            if(!livePrev)
+//                textField.setText("");
+//            else if(livePrev){
+//                textPane.setText("");
+//
+//            }
+//
+//                try {//get current poition
+//                    StyledDocument document = textPane.getStyledDocument();
+//                    int caretPosition = textPane.getCaretPosition();
+//                    document.insertString(caretPosition, output, null);
+//                } catch (BadLocationException ex) {
+//                    ex.printStackTrace();
+//                }
+//
 
 
             if (!(errorWords.isBlank())) {
@@ -171,35 +198,32 @@ textPane.setText(output);//maybe modify it later
         commonSubmitListener();
 
         ///////////////////// ROW 1 ///////////////////////
-        c.anchor = GridBagConstraints.WEST; // Set anchor to the left
-        c.fill = GridBagConstraints.WEST;
-        c.insets = new Insets(0, 18, 0, 0);
-        // Create a container for multiInputBox using FlowLayout
-        JPanel checkBoxContainer = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
-        checkBoxContainer.add(multiInputBox);
-        checkBoxContainer.add(livePrevBox);
+        // Create a container for multiInputBox using FlowLayout
+
+        c.insets = new Insets(0, 18, 0, 0);
 
         setComponentProperty(0, posy, 1, 1, 0, 0);
+
+        panelCheckBoxContainerInit();
         add(checkBoxContainer, c);
 
         ////////////////////// Row 2 ////////////////////////////////////////////
         posy++;
+
         c.insets = new Insets(0, 22, 5, 11);
         c.anchor = GridBagConstraints.WEST; // Set anchor to the left
         setComponentProperty(0 + posx, posy, 1, 1, 0.5, 0);
         c.fill = GridBagConstraints.HORIZONTAL; // Ensure horizontal expansion
+
         add(textField, c);
 
-        setComponentProperty(2 + posx, posy, 1, 1, 0, 0);
-        c.insets = new Insets(10, 10, 0, 0);
-        c.fill = GridBagConstraints.NONE;
-
-        add(copyButton, c);
-
         setComponentProperty(1 + posx, posy, 1, 1, 0, 0);
+        c.insets = new Insets(5, 10, 10, 0);
+        panelButtonInit(false);
+//row 2 button container initialization is in snippet class above row2ButtonInit method
+        add(panelButtonContainer, c);
 
-        add(submitButton, c);
 
         ///////////////////// Row 3 ////////////////////////////////////////////
         posy++;

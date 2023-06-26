@@ -3,6 +3,8 @@ package org.programmerhelper.paradigm;
 import org.programmerhelper.Language;
 import org.programmerhelper.snippets.paradigm.ReservedWordsProvider;
 
+import java.util.Arrays;
+
 public abstract class PLanguage implements ReservedWordsProvider {//Programing Languages
     Language language;
     public abstract Boolean isVariableValid(String userInput);
@@ -24,15 +26,11 @@ public abstract class PLanguage implements ReservedWordsProvider {//Programing L
 
     public String[] splitInput(String input) {
         // Split the input string using the regular expression \s+
-        String[] str = input.split("\\s+");
-        return str;
+
+        return input.split("\\s+");
     }
 
-    protected void setLanguageType(Language languageType) {
 
-        this.language = languageType;
-
-    }
 
     public Language getLanguageType() {
 

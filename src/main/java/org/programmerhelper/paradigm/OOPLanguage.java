@@ -8,9 +8,6 @@ public abstract class OOPLanguage extends PLanguage {
         super(lan);
     }
 
-
-	
-	
 	public abstract String gettersSetters(String userInput,String dataType,String accessModifier);
 
 	public abstract String createClass(String userInput,String type,String accessModifier);//type ->abstract class interface etc

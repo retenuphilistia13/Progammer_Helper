@@ -97,7 +97,7 @@ super(Language.JAVA);
                 "\n" + "    " + accessModifier + "  " + type + " class " + modifiedInput + " {\n\t\n\t\n   }\n";
             case "class" ->
                 "\n" + "    " + accessModifier + "  " + type + " " + modifiedInput + " {\n\t\n\t"
-                + accessModifier + " " + modifiedInput + "(){\n\t\n\t}" + "\n   }\n";
+                + "public" + " " + modifiedInput + "(){\n\t\n\t}" + "\n   }\n";
             default ->
                 "\n" + "    " + accessModifier + "  " + type + " " + modifiedInput + " {\n\t\n\t\n    }\n";
         };
@@ -130,7 +130,7 @@ super(Language.JAVA);
                  """
 +"     System.out.println(\"\");"+"""
                  
-    """+"     }"+"""
+    """+"     }\n"+"""
     """+
   "\n   }\n";
 

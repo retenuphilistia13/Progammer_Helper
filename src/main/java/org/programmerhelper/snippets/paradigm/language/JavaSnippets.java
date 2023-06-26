@@ -24,7 +24,7 @@ public class JavaSnippets extends OOPSnippets {
     @Override
     protected void languageInterface() {
         livePrevListener(); //live Preview Listener
-        OOPInterface(snip);
+
 
         ////////////////row 2/////////////////
         c.anchor = GridBagConstraints.WEST; // Set anchor to the left
@@ -42,14 +42,7 @@ public class JavaSnippets extends OOPSnippets {
             add(checkComboBox, c);
         }
 
-    }
-
-    @Override
-    protected void setInterface() {
-
-        componentInit();
-
-        if (snip == SNIPS.CLASS || snip == SNIPS.GETTERSETTERS) { //Radio
+        if (snip == SNIPS.CLASS || snip == SNIPS.GETTERSETTERS) { //intialize Radio and adding them to panel
             if (snip == SNIPS.CLASS) //intialization
                 radioInit(java.classRadios, java.accessModifierRadios);
 
@@ -58,11 +51,20 @@ public class JavaSnippets extends OOPSnippets {
 
             radioListener();
 
-            radioVarPanel = new RadioPanel(radioButtons1, false); //add to panel
+            radioVarPanel = new RadioPanel(radioButtons1, false); //add radios to panel
             radioAccessModifier = new RadioPanel(radioAccessButtons, true);
         }
 
+    }
+
+    @Override
+    protected void setInterface() {
+
+        componentInit();
+
         languageInterface();
+
+        OOPInterface(snip);
 
         commonListener();
 
