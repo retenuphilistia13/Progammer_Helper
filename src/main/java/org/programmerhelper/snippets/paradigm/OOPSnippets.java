@@ -1,23 +1,18 @@
 package org.programmerhelper.snippets.paradigm;
 
 import org.programmerhelper.paradigm.OOPLanguage;
-import org.programmerhelper.paradigm.PLanguage;
 import org.programmerhelper.snippets.paradigm.components.RadioPanel;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
-import java.util.Arrays;
-import javax.swing.JRadioButton;
-import javax.swing.SwingUtilities;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.StyledDocument;
+import javax.swing.*;
 
 
 public abstract class OOPSnippets extends Snippets { //interface (gui)
     protected RadioPanel radioVarPanel, radioAccessModifier;
 
-    String output2;
+
     protected OOPLanguage OOPlanguage;
 
     public abstract void gettersSetters();
@@ -42,35 +37,6 @@ public abstract class OOPSnippets extends Snippets { //interface (gui)
     }
 
 
-    protected void radioListener() {
-
-        for (JRadioButton radio: radioButtons1) { //lisnter
-            radio.addActionListener((ActionEvent e) -> {
-                SwingUtilities.invokeLater(textField::requestFocusInWindow);
-
-                JRadioButton selectedButton = (JRadioButton) e.getSource();
-                radioType = selectedButton.getText();
-
-                if (e.getSource() == radio&&livePrev) commonListener(); //if any radio in that group it will update the ouput
-            });
-
-        }
-
-        for (JRadioButton radio: radioAccessButtons) { //lisnter
-            radio.addActionListener((ActionEvent e) -> {
-                SwingUtilities.invokeLater(textField::requestFocusInWindow);
-
-                JRadioButton selectedButton = (JRadioButton) e.getSource();
-                accessType = selectedButton.getText();
-
-                if (e.getSource() == radio&&livePrev) commonListener();
-            });
-
-        }
-
-        accessType = radioAccessButtons.get(0).getText(); //default option
-        radioType = radioButtons1.get(0).getText();
-    }
 
     protected void gettersSettersMultiVariable(SNIPS snip) {
         boolean flag;
@@ -96,8 +62,8 @@ public abstract class OOPSnippets extends Snippets { //interface (gui)
     }
 
     protected void oppSubmitInput(SNIPS snip) {
+StringBuilder errorWords=new StringBuilder();
 
-        String errorWords = "";
         output = "";
 
         if (listener != null && textField.getText() != null) {
@@ -112,9 +78,7 @@ public abstract class OOPSnippets extends Snippets { //interface (gui)
 
             multipleInput = OOPlanguage.splitInput(getOriginalInput());//splitting words
 
-            multipleInput = Arrays.stream(multipleInput)//get unique
-                    .distinct()
-                    .toArray(String[]::new);
+            multipleInput = OOPlanguage.getUnique(multipleInput);
 
             boolean flag;
 
@@ -130,7 +94,6 @@ public abstract class OOPSnippets extends Snippets { //interface (gui)
                         if (i >= 1) {
                             output += setOutput();
                         } else {
-
                             output = setOutput();
                         }
 
@@ -140,14 +103,18 @@ public abstract class OOPSnippets extends Snippets { //interface (gui)
 
                 } else {
                     if (flagSubmitted) { //to not make live preview sent error (just textfeild, submit button)
-                        errorWords += getOriginalInput();
-                        errorWords += " ";
+                        errorWords.append("(");
+                        errorWords.append(getOriginalInput());
+                        errorWords.append(")");
+
                     }
                 }
             }
 
             //textPane.setText(""); //maybe modify it later
-textPane.setText(output);
+
+//textPane.setText(output);
+
 
 //            if(!livePrev)
 //                textField.setText("");
@@ -156,17 +123,19 @@ textPane.setText(output);
 //
 //            }
 //
-//                try {//get current poition
-//                    StyledDocument document = textPane.getStyledDocument();
-//                    int caretPosition = textPane.getCaretPosition();
-//                    document.insertString(caretPosition, output, null);
-//                } catch (BadLocationException ex) {
-//                    ex.printStackTrace();
-//                }
+if(livePrev) {
+    textPane.setText(output);
+    listener.onTextOutput(textPane.getText());
+}else{
+    currentWritingOutput(output);
+    listener.onTextOutput(textPane.getText());
+    sendOutputListner();
+
+}
 //
 
 
-            if (!(errorWords.isBlank())) {
+            if (!(errorWords.isEmpty())) {
                 showError(errorWords);
                 flagSubmitted = false;
             }
@@ -184,7 +153,10 @@ textPane.setText(output);
                     textPane.setText(output);
                 } else {
                     if (flagSubmitted) {
-                        showError(getOriginalInput());
+                        errorWords.append("( ");
+                        errorWords.append(getOriginalInput());
+                        errorWords.append(" )");
+                        showError(errorWords);
                         flagSubmitted = false;
                     }
                 }
@@ -276,7 +248,7 @@ textPane.setText(output);
     }
 
     protected void radioInit1(String[] radioString1) {
-        setComponentProperty(3 + posx, 3, 1, 2, 0, 1);
+        //setComponentProperty(3 + posx, 3, 1, 2, 0, 1);
         radio1Pos();
         radioButtons1 = new ArrayList<>();
 
@@ -290,5 +262,36 @@ textPane.setText(output);
         repaint();
         revalidate();
     }
+
+    protected void radioListener() {
+
+        for (JRadioButton radio: radioButtons1) { //lisnter
+            radio.addActionListener((ActionEvent e) -> {
+                SwingUtilities.invokeLater(textField::requestFocusInWindow);
+
+                JRadioButton selectedButton = (JRadioButton) e.getSource();
+                radioType = selectedButton.getText();
+
+                if (e.getSource() == radio&&livePrev) commonListener(); //if any radio in that group it will update the ouput
+            });
+
+        }
+
+        for (JRadioButton radio: radioAccessButtons) { //lisnter
+            radio.addActionListener((ActionEvent e) -> {
+                SwingUtilities.invokeLater(textField::requestFocusInWindow);
+
+                JRadioButton selectedButton = (JRadioButton) e.getSource();
+                accessType = selectedButton.getText();
+
+                if (e.getSource() == radio&&livePrev) commonListener();
+            });
+
+        }
+
+        accessType = radioAccessButtons.get(0).getText(); //default option
+        radioType = radioButtons1.get(0).getText();
+    }
+
 
 }

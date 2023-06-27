@@ -66,7 +66,7 @@ public class JavaSnippets extends OOPSnippets {
 
         OOPInterface(snip);
 
-        commonListener();
+        //commonListener();
 
     }
 

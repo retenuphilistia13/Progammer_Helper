@@ -30,6 +30,13 @@ public abstract class PLanguage implements ReservedWordsProvider {//Programing L
         return input.split("\\s+");
     }
 
+    public String[] getUnique(String[] input) {
+        // Split the input string using the regular expression \s+
+        return Arrays.stream(input)//get unique
+                .distinct()
+                .toArray(String[]::new);
+    }
+
 
 
     public Language getLanguageType() {

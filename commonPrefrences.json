@@ -1,7 +1,7 @@
 {
     "snippet": "getSetItem",
-    "livePrevBox": true,
+    "livePrevBox": false,
     "multipleInputBox": true,
-    "inputText": "ahmed meow meow dolfin holfin milfin ",
+    "inputText": "pepe",
     "language": "JAVA"
 }

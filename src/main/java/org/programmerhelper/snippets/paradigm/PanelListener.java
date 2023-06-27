@@ -10,4 +10,6 @@ public interface PanelListener {
     void onLivePreview(boolean live);
     void onMultipleInputs(boolean multi);
 
+    void onTextOutput(String output);
+
 }

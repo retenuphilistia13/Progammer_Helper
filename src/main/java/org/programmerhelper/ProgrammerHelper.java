@@ -45,7 +45,7 @@ public class ProgrammerHelper extends JFrame implements ActionListener, PanelLis
     private final String filePath;
     Language language;
     Language prevLanguage;
-    private String  snippet,input;
+    private String  snippet,input, output;
     private boolean multi,livePrev;
     boolean isSnip;
     boolean isOOP;
@@ -329,13 +329,19 @@ public class ProgrammerHelper extends JFrame implements ActionListener, PanelLis
             if (e.getSource() == getSetItem || e.getSource() == classItem || e.getSource() == mainClass) { //set Text when entering from panel to panel
                 switch (language){
                     case JAVA -> {
-                        javaSnip.setText(input);
+                        javaSnip.setUserInput(input);
                         javaSnip.setPrevBox(livePrev);
-                        javaSnip.setMultipleInputs(multi);}
+                        javaSnip.setMultipleInputs(multi);
+                        javaSnip.setOutput(output);
+                        System.out.println("output "+output);
+                    }
                     case CPLUSPLUS -> {
-                        CPlusPlusSnip.setText(input);
+                        CPlusPlusSnip.setUserInput(input);
                         CPlusPlusSnip.setPrevBox(livePrev);
                         CPlusPlusSnip.setMultipleInputs(multi);
+                        CPlusPlusSnip.setOutput(output);
+                        System.out.println("output "+output);
+
                     }
                 }
                 System.out.println("text :" + input);
@@ -419,6 +425,11 @@ Language lan;
     @Override
     public void onMultipleInputs(boolean multi) {
         this.multi = multi;
+    }
+
+    @Override
+    public void onTextOutput(String output) {
+        this.output=output;
     }
 
 
