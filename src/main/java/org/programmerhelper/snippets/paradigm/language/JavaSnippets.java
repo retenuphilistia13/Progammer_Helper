@@ -66,6 +66,8 @@ public class JavaSnippets extends OOPSnippets {
 
         OOPInterface(snip);
 
+        appendButton.addActionListener(e->insertLinesAtBeginningAndEnd(textPane,getSelectedLines(textPane)));
+
         //commonListener();
 
     }

@@ -74,7 +74,7 @@ super(Language.JAVA);
         return "\n\n    " + accessModifier + " void set" + modifiedInput + "(" + dataType + " " + userInput + ")"
                 + "{\n\t\n    this." + userInput + " = " + userInput + ";\t\n\t\n\t}"
                 + "\n\n    " + accessModifier + " " + dataType + " get" + modifiedInput + "()" + "{\n\n    return "
-                + userInput + "; \t\n\n\t}\n";
+                + userInput + "; \t\n\n\t } \n         ";
 
     }
 
@@ -118,21 +118,15 @@ super(Language.JAVA);
 
 //        return "   public class " + userInput + " { \n\t\n\t\n   "
 //                + "public static void main(String args[]){\n\t\n   System.out.println(\"\");\n    }\n }\n";
-        return """
-                        """  + "\n" +
-                "  public class " + userInput + " {"+
+        return  "\n" +
+                "  public class " + userInput + " { "+
   	"\n" +
                 "\n" +
-                "      "
-                + "public static void main(String args[])"+"{"+ """
+
+                 " public static void main(String args[])"+"{ "+
+"\n     System.out.println(\"\"); "+
                  
-                 
-                 """
-+"     System.out.println(\"\");"+"""
-                 
-    """+"     }\n"+"""
-    """+
-  "\n   }\n";
+    "     }\n "+"\n   } \n";
 
     }
 

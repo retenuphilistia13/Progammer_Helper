@@ -5,13 +5,17 @@ import org.programmerhelper.snippets.paradigm.components.RadioPanel;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import javax.swing.*;
+import javax.swing.event.CaretEvent;
+import javax.swing.event.CaretListener;
+import javax.swing.text.BadLocationException;
 
 
 public abstract class OOPSnippets extends Snippets { //interface (gui)
     protected RadioPanel radioVarPanel, radioAccessModifier;
-
 
     protected OOPLanguage OOPlanguage;
 
@@ -60,7 +64,8 @@ public abstract class OOPSnippets extends Snippets { //interface (gui)
         } //end if getterssetter
 
     }
-
+boolean oneTimeActivation;
+    boolean isMousePressed;
     protected void oppSubmitInput(SNIPS snip) {
 StringBuilder errorWords=new StringBuilder();
 
@@ -111,8 +116,6 @@ StringBuilder errorWords=new StringBuilder();
                 }
             }
 
-            //textPane.setText(""); //maybe modify it later
-
 //textPane.setText(output);
 
 
@@ -122,17 +125,6 @@ StringBuilder errorWords=new StringBuilder();
 //                textPane.setText("");
 //
 //            }
-//
-if(livePrev) {
-    textPane.setText(output);
-    listener.onTextOutput(textPane.getText());
-}else{
-    currentWritingOutput(output);
-    listener.onTextOutput(textPane.getText());
-    sendOutputListner();
-
-}
-//
 
 
             if (!(errorWords.isEmpty())) {
@@ -149,8 +141,7 @@ if(livePrev) {
                     if (snip == SNIPS.GETTERSETTERS) output = OOPlanguage.createVariable(getOriginalInput(), radioType, accessType);
 
                     output += setOutput();
-                    textPane.setText("");
-                    textPane.setText(output);
+
                 } else {
                     if (flagSubmitted) {
                         errorWords.append("( ");
@@ -163,6 +154,24 @@ if(livePrev) {
             }
 
         }
+
+
+//        appendButton.addActionListener(e->insertLinesAtBeginningAndEnd(textPane,getSelectedLines(textPane)));
+
+        if(livePrev) {
+            textPane.setText(output);
+            listener.onTextOutput(textPane.getText());
+
+        }else{
+
+                currentWritingOutput(output);
+                listener.onTextOutput(textPane.getText());
+
+        }
+
+        sendOutputListner();
+
+
     }
 
     protected void OOPInterface(SNIPS snip) {
@@ -194,11 +203,20 @@ if(livePrev) {
         c.insets = new Insets(5, 10, 10, 0);
         panelButtonInit(false);
 //row 2 button container initialization is in snippet class above row2ButtonInit method
+
+
         add(panelButtonContainer, c);
+
+
 
 
         ///////////////////// Row 3 ////////////////////////////////////////////
         posy++;
+
+
+        c.insets = new Insets(0, 15, 0, 0);
+        setComponentProperty(1 + posx, posy, 1, 1, 0, 0);
+        add(appendButton,c);
 
         if (snip == SNIPS.CLASS || snip == SNIPS.GETTERSETTERS) {
             c.insets = new Insets(1, 20, 1, 3);
@@ -220,10 +238,42 @@ if(livePrev) {
         add(scrollPane, c);
 
         radio1Pos();
+
         if (snip == SNIPS.CLASS || snip == SNIPS.GETTERSETTERS) {
             setComponentProperty(3 + posx, posy, 1, 2, 0, 1);
             add(radioVarPanel, c);
         }
+
+
+
+
+
+//        textPane.addMouseListener(new MouseAdapter() {
+//            @Override
+//            public void mousePressed(MouseEvent e) {
+//                isMousePressed = true;
+//
+//            }
+//
+//            @Override
+//            public void mouseReleased(MouseEvent e) {
+//                if (isMousePressed && textPane.getSelectedText() != null) {
+//                    SwingUtilities.invokeLater(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            String selectedLines = getSelectedLines(textPane);
+//                            //removeSelectedLines(textPane);
+//                            insertLinesAtBeginningAndEnd(textPane, selectedLines);
+//
+//
+//                        }
+//                    });
+//                }
+//                isMousePressed = false;
+//
+//            }
+//        });
+
 
 
     }
