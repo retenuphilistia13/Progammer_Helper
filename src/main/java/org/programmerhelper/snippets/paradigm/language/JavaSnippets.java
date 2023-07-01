@@ -59,6 +59,7 @@ public class JavaSnippets extends OOPSnippets {
 
     @Override
     protected void setInterface() {
+        firstActivity=true;
 
         componentInit();
 
@@ -66,54 +67,58 @@ public class JavaSnippets extends OOPSnippets {
 
         OOPInterface(snip);
 
-        appendButton.addActionListener(e->insertLinesAtBeginningAndEnd(textPane,getSelectedLines(textPane)));
 
-        //commonListener();
-
+        commonListener();
     }
 
     @Override
     protected void commonListener() {
 
-        oppSubmitInput(snip);
+        if(firstActivity) {
+            if (checkComboBox != null) {
 
-        if (checkComboBox != null) {
+                checkComboBox.addActionListener((ActionEvent e) -> {
+                    SwingUtilities.invokeLater(textField::requestFocusInWindow);
 
-            checkComboBox.addActionListener((ActionEvent e) -> {
-                SwingUtilities.invokeLater(textField::requestFocusInWindow);
+                    switch (checkComboBox.getSelectedItem()) {
+                        case "Primitive" -> {
+                            removeRadio1();
 
-                switch (checkComboBox.getSelectedItem()) {
-                    case "Primitive" -> {
-                        System.out.println("Primitive");
+                            radioInit1(java.Primitive);
+                            radioListener();
 
-                        removeRadio1();
-                        radioInit1(java.Primitive);
-                        radioListener();
-                        radioVarPanel = new RadioPanel(radioButtons1, false); //add to panel
-                        add(radioVarPanel, c);
+
+                        }
+
+                        case "Popular" -> {
+                            System.out.println("Popular");
+                            removeRadio1();
+
+                            radioInit1(java.popularRadios);
+                            radioListener();
+
+
+                        }
+
+                        case "Wrapper" -> {
+                            removeRadio1();
+
+                            radioInit1(java.Wrapper);
+                            radioListener();
+
+
+                        }
+
+                        default -> {
+                        }
                     }
-
-                    case "Popular" -> {
-                        System.out.println("Popular");
-                        removeRadio1();
-                        radioInit1(java.popularRadios);
-                        radioListener();
-                        radioVarPanel = new RadioPanel(radioButtons1, false); //add to panel
-                        add(radioVarPanel, c);
-                    }
-
-                    case "Wrapper" -> {
-                        removeRadio1();
-
-                        radioInit1(java.Wrapper);
-                        radioListener();
-                        radioVarPanel = new RadioPanel(radioButtons1, false); //add to panel
-                        add(radioVarPanel, c);
-                    }
-
-                    default -> {}
-                }
-            });
+                    radioVarPanel = new RadioPanel(radioButtons1, false); //add to panel
+                    add(radioVarPanel, c);
+                });
+            }
+            firstActivity=false;
+        }else{
+            oppSubmitInput(snip);
         }
 
 

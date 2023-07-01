@@ -5,13 +5,8 @@ import org.programmerhelper.snippets.paradigm.components.RadioPanel;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import javax.swing.*;
-import javax.swing.event.CaretEvent;
-import javax.swing.event.CaretListener;
-import javax.swing.text.BadLocationException;
 
 
 public abstract class OOPSnippets extends Snippets { //interface (gui)
@@ -64,9 +59,9 @@ public abstract class OOPSnippets extends Snippets { //interface (gui)
         } //end if getterssetter
 
     }
-boolean oneTimeActivation;
-    boolean isMousePressed;
+
     protected void oppSubmitInput(SNIPS snip) {
+
 StringBuilder errorWords=new StringBuilder();
 
         output = "";
@@ -144,9 +139,9 @@ StringBuilder errorWords=new StringBuilder();
 
                 } else {
                     if (flagSubmitted) {
-                        errorWords.append("( ");
+                        errorWords.append(" \"");
                         errorWords.append(getOriginalInput());
-                        errorWords.append(" )");
+                        errorWords.append(" \"");
                         showError(errorWords);
                         flagSubmitted = false;
                     }
@@ -156,20 +151,25 @@ StringBuilder errorWords=new StringBuilder();
         }
 
 
-//        appendButton.addActionListener(e->insertLinesAtBeginningAndEnd(textPane,getSelectedLines(textPane)));
-
         if(livePrev) {
             textPane.setText(output);
             listener.onTextOutput(textPane.getText());
 
-        }else{
-
+        }else if(flagSubmitted&&isAppend==false){
+                textPane.setText(output);
+                listener.onTextOutput(textPane.getText());
+        }
+        else if(isAppend ){//appending mode
+            if(textPane.getSelectedText()==null) {
                 currentWritingOutput(output);
                 listener.onTextOutput(textPane.getText());
-
+            }else if(textPane.getSelectedText()!=null){
+            // appendButton.addActionListener(e->insertLinesAtBeginningAndEnd(textPane,getSelectedLines(textPane))); //cant put it here because action event should not be declared twise or more
+                listener.onTextOutput(textPane.getText());
+            }
         }
 
-        sendOutputListner();
+        sendOutputListener();
 
 
     }
@@ -218,11 +218,13 @@ StringBuilder errorWords=new StringBuilder();
         setComponentProperty(1 + posx, posy, 1, 1, 0, 0);
         add(appendButton,c);
 
+
         if (snip == SNIPS.CLASS || snip == SNIPS.GETTERSETTERS) {
             c.insets = new Insets(1, 20, 1, 3);
             setComponentProperty(0 + posx, posy, 1, 1, 0, 0);
             add(radioAccessModifier, c);
         }
+
 
         ///////////////////// Row 4 ///////////////////////////////////////////
         posy++;
@@ -245,7 +247,7 @@ StringBuilder errorWords=new StringBuilder();
         }
 
 
-
+        appendButton.addActionListener(e->insertLinesAtBeginningAndEnd(textPane,getSelectedLines(textPane)));//one time should be activated
 
 
 //        textPane.addMouseListener(new MouseAdapter() {

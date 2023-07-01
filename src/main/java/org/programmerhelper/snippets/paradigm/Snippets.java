@@ -13,8 +13,6 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -44,6 +42,8 @@ public abstract class Snippets extends JPanel implements ReservedWordsProvider {
     protected boolean flagSubmitted;
 
     protected Language language;
+
+    protected boolean firstActivity;
 
     protected JButton appendButton =new JButton("append");
 
@@ -91,7 +91,7 @@ public abstract class Snippets extends JPanel implements ReservedWordsProvider {
 
     }
 
-    protected void sendOutputListner(){
+    protected void sendOutputListener(){
 
         SwingUtilities.invokeLater(() -> {//send "real time" output to programmer Helper
             textPane.getDocument().addDocumentListener(new DocumentListener() {
@@ -158,36 +158,40 @@ public abstract class Snippets extends JPanel implements ReservedWordsProvider {
         String begin="beginbeginbeginbeginbeginbegin";
         String end="endendendendendendendendendendend";
 
-        try {
-            int selectionStart = textComponent.getSelectionStart();
+if(textPane.getSelectedText()!=null)
+    try {
+        int selectionStart = textComponent.getSelectionStart();
 
-            Document doc = textComponent.getDocument();
-            int docLength = doc.getLength();
-            if (selectionStart > docLength) {
-                selectionStart = docLength; // Limit start position to document length
-            }
-            doc.insertString(selectionStart, begin, null);
-
-
-            int insertionIndex = selectionStart + begin.length() + lines.length();
-
-
-            // Check if the insertion index is not at the end of a line
-            Element root = doc.getDefaultRootElement();
-            int line = root.getElementIndex(insertionIndex);
-            Element lineElement = root.getElement(line);
-            int lineEnd = lineElement.getEndOffset() - 1; // Exclude the line break character
-            if (insertionIndex < lineEnd) {
-                // Move the insertion index to the beginning of the next line
-                insertionIndex = lineEnd + 1; // Add 1 to position after the line break
-            }
-
-            doc.insertString(insertionIndex, end, null);
-        } catch (BadLocationException ex) {
-            ex.printStackTrace();
+        Document doc = textComponent.getDocument();
+        int docLength = doc.getLength();
+        if (selectionStart > docLength) {
+            selectionStart = docLength; // Limit start position to document length
         }
-        listener.onTextOutput(textPane.getText());
+        doc.insertString(selectionStart, begin, null);
+
+
+        int insertionIndex = selectionStart + begin.length() + lines.length();
+
+
+        // Check if the insertion index is not at the end of a line
+        Element root = doc.getDefaultRootElement();
+        int line = root.getElementIndex(insertionIndex);
+        Element lineElement = root.getElement(line);
+        int lineEnd = lineElement.getEndOffset() - 1; // Exclude the line break character
+        if (insertionIndex < lineEnd) {
+            // Move the insertion index to the beginning of the next line
+            insertionIndex = lineEnd + 1; // Add 1 to position after the line break
+        }
+
+        doc.insertString(insertionIndex, end, null);
+    } catch (BadLocationException ex) {
+        ex.printStackTrace();
     }
+
+       // listener.onTextOutput(textPane.getText());
+    }
+
+
     protected  void removeSelectedLines(JTextComponent textComponent) {
         try {
             Document doc = textComponent.getDocument();
@@ -244,14 +248,6 @@ public abstract class Snippets extends JPanel implements ReservedWordsProvider {
             }
         }
 
-//        textPane.addMouseListener(new MouseAdapter() {
-//            @Override
-//            public void mouseClicked(MouseEvent e) {
-//                textField.requestFocus();
-//            }
-//        });
-//
-//        textPane.setEditable(false);
 
         if (userInput == null) userInput = "";
         
@@ -389,36 +385,33 @@ public abstract class Snippets extends JPanel implements ReservedWordsProvider {
     protected void commonSubmitListener() {
 
         textField.addActionListener(e -> {
-            if (e.getSource() == textField) {
-                flagSubmitted = true;
-            }
-
-            //commonListener();
-
-            SwingUtilities.invokeLater(textField::requestFocusInWindow);
-
-            if (e.getSource() == textField)//just to reset (just in case)
-            {
-                flagSubmitted = false;
-            }
+            submitAction(e,textField);
 
         });
 
-        submitButton.addActionListener(e -> {// submit button listener
-            if (e.getSource() == submitButton) {
-                flagSubmitted = true;
-            }
-
+        appendButton.addActionListener(e -> {
+            isAppend=true;
             commonListener();
-
-            SwingUtilities.invokeLater(textField::requestFocusInWindow);
-
-            if (e.getSource() == submitButton) {
-                flagSubmitted = false;
-            }
+            isAppend=false;//could be prefrenced when changing to append mode
+        });
+        submitButton.addActionListener(e -> {// submit button listener
+            submitAction(e,submitButton);
         });
     }
+    boolean isAppend;
+private void submitAction(ActionEvent e, Component component){
+    if (e.getSource() == component) {
+        flagSubmitted = true;
+    }
 
+    commonListener();
+
+    SwingUtilities.invokeLater(textField::requestFocusInWindow);
+
+    if (e.getSource() == component) {
+        flagSubmitted = false;
+    }
+}
     protected void livePrevListener() {//live listener
 
         textField.getDocument().addDocumentListener(new DocumentListener() {
