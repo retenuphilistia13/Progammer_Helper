@@ -29,15 +29,15 @@ public abstract class OOPSnippets extends Snippets { //interface (gui)
         this.OOPlanguage = language;
         this.flagSubmitted = false;
 
-//        appendButton.addActionListener(e-> {
-//            OOPlanguage.beginOutput.delete(0, OOPlanguage.beginOutput.length());
-//            OOPlanguage.endOutput.delete(0, OOPlanguage.endOutput.length());
-//
-//        commonListener();
-//        insertLinesAtBeginningAndEnd(textPane, getSelectedLines(textPane), OOPlanguage.beginOutput.toString(), OOPlanguage.endOutput.toString());
-//            listener.onTextOutput(textPane.getText());
-//
-//        });//one time should be activated
+        appendButton.addActionListener(e-> {
+            OOPlanguage.beginOutput.delete(0, OOPlanguage.beginOutput.length());
+            OOPlanguage.endOutput.delete(0, OOPlanguage.endOutput.length());
+
+        commonListener();
+        insertLinesAtBeginningAndEnd(textPane, getSelectedLines(textPane), OOPlanguage.beginOutput.toString(), OOPlanguage.endOutput.toString());
+            listener.onTextOutput(textPane.getText());
+
+        });//one time should be activated
 
     }
 
@@ -183,12 +183,12 @@ StringBuilder errorWords=new StringBuilder();
 
 
             }else if(textPane.getSelectedText()!=null){
-
-                insertLinesAtBeginningAndEnd(textPane, getSelectedLines(textPane), OOPlanguage.beginOutput.toString(), OOPlanguage.endOutput.toString());
-
-                OOPlanguage.beginOutput.delete(0, OOPlanguage.beginOutput.length());
-                OOPlanguage.endOutput.delete(0, OOPlanguage.endOutput.length());
-
+//tried the logic doesnt work properly
+//                insertLinesAtBeginningAndEnd(textPane, getSelectedLines(textPane), OOPlanguage.beginOutput.toString(), OOPlanguage.endOutput.toString());
+//
+//                OOPlanguage.beginOutput.delete(0, OOPlanguage.beginOutput.length());
+//                OOPlanguage.endOutput.delete(0, OOPlanguage.endOutput.length());
+//
                 listener.onTextOutput(textPane.getText());
             }
         }
