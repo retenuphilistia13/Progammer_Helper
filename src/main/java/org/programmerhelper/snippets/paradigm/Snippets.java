@@ -154,10 +154,11 @@ public abstract class Snippets extends JPanel implements ReservedWordsProvider {
         return selectedLines;
     }
 
-    protected void insertLinesAtBeginningAndEnd(JTextComponent textComponent, String lines) {
-        String begin="beginbeginbeginbeginbeginbegin";
-        String end="endendendendendendendendendendend";
+    protected void insertLinesAtBeginningAndEnd(JTextComponent textComponent, String lines,String begin,String end) {
 
+//        String begin="beginbeginbeginbeginbeginbegin";
+//        String end="endendendendendendendendendendend";
+;
 if(textPane.getSelectedText()!=null)
     try {
         int selectionStart = textComponent.getSelectionStart();
@@ -379,26 +380,25 @@ if(textPane.getSelectedText()!=null)
 
     }
 
+    boolean isAppend;
     public void showError(StringBuilder errorWords) {
         JOptionPane.showMessageDialog(this, "error invalid input "+errorWords.toString());
     }
     protected void commonSubmitListener() {
 
-        textField.addActionListener(e -> {
-            submitAction(e,textField);
+        submitButton.addActionListener(e ->submitAction(e,submitButton));
 
-        });
+        textField.addActionListener(e -> submitAction(e,textField));
 
         appendButton.addActionListener(e -> {
             isAppend=true;
             commonListener();
             isAppend=false;//could be prefrenced when changing to append mode
         });
-        submitButton.addActionListener(e -> {// submit button listener
-            submitAction(e,submitButton);
-        });
+
+
     }
-    boolean isAppend;
+
 private void submitAction(ActionEvent e, Component component){
     if (e.getSource() == component) {
         flagSubmitted = true;
@@ -456,15 +456,5 @@ private void submitAction(ActionEvent e, Component component){
 
     }
 
-    protected void appendSelection(ActionEvent e) {
 
-        SwingUtilities.invokeLater(textField::requestFocusInWindow);
-
-        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-        if (textPane.getText() != null) {//pefore output!=null
-            StringSelection selection = new StringSelection(textPane.getText());//copy text in textarea
-            clipboard.setContents(selection, null);
-        }
-
-    }
 }

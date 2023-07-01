@@ -6,6 +6,9 @@ import org.programmerhelper.snippets.paradigm.ReservedWordsProvider;
 import java.util.Arrays;
 
 public abstract class PLanguage implements ReservedWordsProvider {//Programing Languages
+   public  StringBuilder beginOutput;
+   public StringBuilder endOutput;
+
     Language language;
     public abstract Boolean isVariableValid(String userInput);
 
@@ -13,6 +16,8 @@ public abstract class PLanguage implements ReservedWordsProvider {//Programing L
 
     public PLanguage(Language language){
         this.language=language;
+        beginOutput =new StringBuilder();
+        endOutput =new StringBuilder();
     }
 //public abstract Boolean isVariableValid(String userInput);
     public String capitalizeFirstChar(String str) {

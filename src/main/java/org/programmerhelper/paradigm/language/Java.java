@@ -60,6 +60,8 @@ super(Language.JAVA);
      * @param accessModifier
      * @return
      */
+
+
     @Override
     public String gettersSetters(String userInput, String dataType, String accessModifier) {
 
@@ -71,10 +73,16 @@ super(Language.JAVA);
             accessModifier = "";
         }
 
-        return "\n\n    " + accessModifier + " void set" + modifiedInput + "(" + dataType + " " + userInput + ")"
-                + "{\n\t\n    this." + userInput + " = " + userInput + ";\t\n\t\n\t}"
-                + "\n\n    " + accessModifier + " " + dataType + " get" + modifiedInput + "()" + "{\n\n    return "
-                + userInput + "; \t\n\n\t } \n         ";
+                String begin="\n\n    " + accessModifier + " void set" + modifiedInput + "(" + dataType + " " + userInput + ")"
+                        + "{\n\n    this." + userInput + " = " + userInput + ";\n\n\t}";
+        String end="\n\n    " + accessModifier + " " + dataType + " get" + modifiedInput + "()" + "{\n\n    return "
+                + userInput + "; \n\n\t } \n         ";
+
+        beginOutput.append(begin);
+        endOutput.append(end);
+
+        return begin+end;
+
 
     }
 
@@ -92,21 +100,30 @@ super(Language.JAVA);
             return " \n\n";
         }
 
+
+
         return switch (type) {
             case "abstract" ->
-                "\n" + "    " + accessModifier + "  " + type + " class " + modifiedInput + " {\n\t\n\t\n   }\n";
+                "\n" + "    " + accessModifier + "  " + type + " class " + modifiedInput + " {\n\n\n   }\n";
             case "class" ->
-                "\n" + "    " + accessModifier + "  " + type + " " + modifiedInput + " {\n\t\n\t"
-                + "public" + " " + modifiedInput + "(){\n\t\n\t}" + "\n   }\n";
+                "\n" + "    " + accessModifier + "  " + type + " " + modifiedInput + " {\n\n\t"
+                + "public" + " " + modifiedInput + "(){\n\n\t}" + "\n   }\n";
             default ->
-                "\n" + "    " + accessModifier + "  " + type + " " + modifiedInput + " {\n\t\n\t\n    }\n";
+                "\n" + "    " + accessModifier + "  " + type + " " + modifiedInput + " {\n\n\n    }\n";
         };
 
     }// type ->abstract class interface etc
 
+
+    public String createVariable(String userInput, String dataType) {
+        String output = "    " + "private " + dataType + " " + userInput + ";\n";
+        return output;
+
+    }
+
     @Override
     public String createVariable(String userInput, String dataType, String accessModifier) {
-        String output = "    " + "private " + dataType + " " + userInput + ";\n";
+        String output = "    " + accessModifier+" " + dataType + " " + userInput + ";\n";
         return output;
 
     }
@@ -114,19 +131,17 @@ super(Language.JAVA);
     @Override
     public String createMainClass(String userInput, String type, String accessModifier) {
 
-        //String modifiedInput = capitalizeFirstChar(userInput);
+        String begin,end;
+begin="\n  public class " + userInput + " { "+
+        "\n\n public static void main(String args[])"+"{ \n";
+end= "     System.out.println(\"\"); \n"+
+        "     }\n\n   } \n";
+        System.out.println("\n\n"+"before main here" +beginOutput.toString()+endOutput.toString()+"\n\n");
+        beginOutput.append(begin);
 
-//        return "   public class " + userInput + " { \n\t\n\t\n   "
-//                + "public static void main(String args[]){\n\t\n   System.out.println(\"\");\n    }\n }\n";
-        return  "\n" +
-                "  public class " + userInput + " { "+
-  	"\n" +
-                "\n" +
-
-                 " public static void main(String args[])"+"{ "+
-"\n     System.out.println(\"\"); "+
-                 
-    "     }\n "+"\n   } \n";
+        endOutput.append(end);
+        System.out.println("\n\n"+"after main here" +beginOutput.toString()+endOutput.toString()+"\n\n");
+        return begin+end;
 
     }
 
@@ -134,16 +149,16 @@ super(Language.JAVA);
     public Boolean isVariableValid(String userInput) {
 
         char firstChar = userInput.charAt(0);
-        int inputlength = userInput.length();
+        int inputLength = userInput.length();
 
         // false sector
-        if (inputlength < 1) {
+        if (inputLength < 1) {
             return false;
         } else if (userInput.contains(" ")) {
             return false;
         } else if (Character.isDigit(firstChar)) {
             return false;
-        } else if (firstChar == '_' && inputlength < 2)// _ not allowed while $ is fine
+        } else if (firstChar == '_' && inputLength < 2)// _ not allowed while $ is fine
         {
             return false;
         } else if (isReserved(userInput) == true) {

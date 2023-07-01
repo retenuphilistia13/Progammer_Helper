@@ -28,6 +28,17 @@ public abstract class OOPSnippets extends Snippets { //interface (gui)
         super(listener, text, multi, live);
         this.OOPlanguage = language;
         this.flagSubmitted = false;
+
+//        appendButton.addActionListener(e-> {
+//            OOPlanguage.beginOutput.delete(0, OOPlanguage.beginOutput.length());
+//            OOPlanguage.endOutput.delete(0, OOPlanguage.endOutput.length());
+//
+//        commonListener();
+//        insertLinesAtBeginningAndEnd(textPane, getSelectedLines(textPane), OOPlanguage.beginOutput.toString(), OOPlanguage.endOutput.toString());
+//            listener.onTextOutput(textPane.getText());
+//
+//        });//one time should be activated
+
     }
 
 
@@ -158,13 +169,26 @@ StringBuilder errorWords=new StringBuilder();
         }else if(flagSubmitted&&isAppend==false){
                 textPane.setText(output);
                 listener.onTextOutput(textPane.getText());
+
+            OOPlanguage.beginOutput.delete(0, OOPlanguage.beginOutput.length());
+            OOPlanguage.endOutput.delete(0, OOPlanguage.endOutput.length());
         }
         else if(isAppend ){//appending mode
             if(textPane.getSelectedText()==null) {
                 currentWritingOutput(output);
                 listener.onTextOutput(textPane.getText());
+
+                OOPlanguage.beginOutput.delete(0, OOPlanguage.beginOutput.length());
+                OOPlanguage.endOutput.delete(0, OOPlanguage.endOutput.length());
+
+
             }else if(textPane.getSelectedText()!=null){
-            // appendButton.addActionListener(e->insertLinesAtBeginningAndEnd(textPane,getSelectedLines(textPane))); //cant put it here because action event should not be declared twise or more
+
+                insertLinesAtBeginningAndEnd(textPane, getSelectedLines(textPane), OOPlanguage.beginOutput.toString(), OOPlanguage.endOutput.toString());
+
+                OOPlanguage.beginOutput.delete(0, OOPlanguage.beginOutput.length());
+                OOPlanguage.endOutput.delete(0, OOPlanguage.endOutput.length());
+
                 listener.onTextOutput(textPane.getText());
             }
         }
@@ -247,34 +271,6 @@ StringBuilder errorWords=new StringBuilder();
         }
 
 
-        appendButton.addActionListener(e->insertLinesAtBeginningAndEnd(textPane,getSelectedLines(textPane)));//one time should be activated
-
-
-//        textPane.addMouseListener(new MouseAdapter() {
-//            @Override
-//            public void mousePressed(MouseEvent e) {
-//                isMousePressed = true;
-//
-//            }
-//
-//            @Override
-//            public void mouseReleased(MouseEvent e) {
-//                if (isMousePressed && textPane.getSelectedText() != null) {
-//                    SwingUtilities.invokeLater(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            String selectedLines = getSelectedLines(textPane);
-//                            //removeSelectedLines(textPane);
-//                            insertLinesAtBeginningAndEnd(textPane, selectedLines);
-//
-//
-//                        }
-//                    });
-//                }
-//                isMousePressed = false;
-//
-//            }
-//        });
 
 
 
