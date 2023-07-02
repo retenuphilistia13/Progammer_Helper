@@ -65,7 +65,12 @@ public class C_Plus_Plus extends OOPLanguage{
             return output;
     }
 
-    @Override
+	@Override
+	public String createVariable(String userInput, String dataType) {
+		return null;
+	}
+
+	@Override
     public boolean isIllegalCharacter(String userInput) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }

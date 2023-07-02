@@ -59,11 +59,15 @@ public abstract class OOPSnippets extends Snippets { //interface (gui)
 
                 if (flag) {
 
-                    if (i >= 1)
-                        output += "\n" + OOPlanguage.createVariable(getOriginalInput(), radioType, accessType);
-                    else
-                        output = OOPlanguage.createVariable(getOriginalInput(), radioType, accessType);
+                    if (i >= 1) {
 
+                        output += "\n" + OOPlanguage.createVariable(getOriginalInput(), radioType);
+                        OOPlanguage.beginOutput.append(OOPlanguage.createVariable(getOriginalInput(), radioType));
+                    }
+                    else {
+                        output = OOPlanguage.createVariable(getOriginalInput(), radioType);
+                        OOPlanguage.beginOutput.append(OOPlanguage.createVariable(getOriginalInput(), radioType));
+                    }
                 }
 
             }
@@ -104,12 +108,14 @@ StringBuilder errorWords=new StringBuilder();
                     if (snip != SNIPS.GETTERSETTERS) //for other snips
                         if (i >= 1) {
                             output += setOutput();
+
                         } else {
                             output = setOutput();
                         }
 
                     else if (snip == SNIPS.GETTERSETTERS) { //for getters and setters
                         output += setOutput();
+                        OOPlanguage.endOutput.append(setOutput());
                     }
 
                 } else {
@@ -144,7 +150,7 @@ StringBuilder errorWords=new StringBuilder();
                 setOriginalInput(textField.getText());
 
                 if (OOPlanguage.isVariableValid(getOriginalInput())) {
-                    if (snip == SNIPS.GETTERSETTERS) output = OOPlanguage.createVariable(getOriginalInput(), radioType, accessType);
+                    if (snip == SNIPS.GETTERSETTERS) output = OOPlanguage.createVariable(getOriginalInput(), radioType);
 
                     output += setOutput();
 
@@ -192,13 +198,14 @@ StringBuilder errorWords=new StringBuilder();
                 listener.onTextOutput(textPane.getText());
             }
         }
+        //sendOutputListener();
 
-        sendOutputListener();
 
 
     }
 
     protected void OOPInterface(SNIPS snip) {
+        sendOutputListener();
 
         commonSubmitListener();
 

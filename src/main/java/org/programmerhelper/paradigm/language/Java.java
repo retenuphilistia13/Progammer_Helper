@@ -78,8 +78,8 @@ super(Language.JAVA);
         String end="\n\n    " + accessModifier + " " + dataType + " get" + modifiedInput + "()" + "{\n\n    return "
                 + userInput + "; \n\n\t } \n         ";
 
-        beginOutput.append(begin);
-        endOutput.append(end);
+
+       // endOutput.append(begin+end);
 
         return begin+end;
 
@@ -101,22 +101,27 @@ super(Language.JAVA);
         }
 
 
-
-        return switch (type) {
+String begin="";
+         switch (type) {
             case "abstract" ->
-                "\n" + "    " + accessModifier + "  " + type + " class " + modifiedInput + " {\n\n\n   }\n";
+                begin="\n" + "    " + accessModifier + "  " + type + " class " + modifiedInput + " {\n\n\n   \n";
             case "class" ->
-                "\n" + "    " + accessModifier + "  " + type + " " + modifiedInput + " {\n\n\t"
-                + "public" + " " + modifiedInput + "(){\n\n\t}" + "\n   }\n";
+                    begin= "\n" + "    " + accessModifier + "  " + type + " " + modifiedInput + " {\n\n\t"
+                + "public" + " " + modifiedInput + "(){\n\n\t}" + "\n   \n";
             default ->
-                "\n" + "    " + accessModifier + "  " + type + " " + modifiedInput + " {\n\n\n    }\n";
+                    begin="\n" + "    " + accessModifier + "  " + type + " " + modifiedInput + " {\n\n\n    \n";
         };
+String end="\n     }";
+beginOutput.append(begin);
+endOutput.append(end);
 
+        return (begin+end);
     }// type ->abstract class interface etc
 
 
     public String createVariable(String userInput, String dataType) {
         String output = "    " + "private " + dataType + " " + userInput + ";\n";
+       // beginOutput.append(output);
         return output;
 
     }
@@ -136,11 +141,11 @@ begin="\n  public class " + userInput + " { "+
         "\n\n public static void main(String args[])"+"{ \n";
 end= "     System.out.println(\"\"); \n"+
         "     }\n\n   } \n";
-        System.out.println("\n\n"+"before main here" +beginOutput.toString()+endOutput.toString()+"\n\n");
+       // System.out.println("\n\n"+"before main here" +beginOutput.toString()+endOutput.toString()+"\n\n");
         beginOutput.append(begin);
 
         endOutput.append(end);
-        System.out.println("\n\n"+"after main here" +beginOutput.toString()+endOutput.toString()+"\n\n");
+       // System.out.println("\n\n"+"after main here" +beginOutput.toString()+endOutput.toString()+"\n\n");
         return begin+end;
 
     }

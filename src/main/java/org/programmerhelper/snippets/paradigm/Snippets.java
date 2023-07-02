@@ -156,9 +156,7 @@ public abstract class Snippets extends JPanel implements ReservedWordsProvider {
 
     protected void insertLinesAtBeginningAndEnd(JTextComponent textComponent, String lines,String begin,String end) {
 
-//        String begin="beginbeginbeginbeginbeginbegin";
-//        String end="endendendendendendendendendendend";
-;
+
 if(textPane.getSelectedText()!=null)
     try {
         int selectionStart = textComponent.getSelectionStart();
@@ -189,25 +187,14 @@ if(textPane.getSelectedText()!=null)
         ex.printStackTrace();
     }
 
-       // listener.onTextOutput(textPane.getText());
+
     }
 
 
-    protected  void removeSelectedLines(JTextComponent textComponent) {
-        try {
-            Document doc = textComponent.getDocument();
-            int selectionStart = textComponent.getSelectionStart();
-            int selectionEnd = textComponent.getSelectionEnd();
-            doc.remove(selectionStart, selectionEnd - selectionStart);
-        } catch (BadLocationException ex) {
-            ex.printStackTrace();
-        }
-    }
     public void setOutput(String output){
 
         this.output=output;
         textPane.setText(this.output);
-
 
     }
 
@@ -391,6 +378,7 @@ if(textPane.getSelectedText()!=null)
         textField.addActionListener(e -> submitAction(e,textField));
 
         appendButton.addActionListener(e -> {
+            SwingUtilities.invokeLater(textField::requestFocusInWindow);
             isAppend=true;
             commonListener();
             isAppend=false;//could be prefrenced when changing to append mode

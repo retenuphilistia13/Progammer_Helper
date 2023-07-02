@@ -15,5 +15,6 @@ public abstract class OOPLanguage extends PLanguage {
 	public abstract String createMainClass(String userInput,String type,String accessModifier);
 
         public abstract String createVariable(String userInput, String dataType, String accessModifier);
+    public abstract String createVariable(String userInput, String dataType);
 
 }
