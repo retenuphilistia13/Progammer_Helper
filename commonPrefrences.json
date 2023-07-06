@@ -1,7 +1,8 @@
 {
-    "snippet": "classItem",
+    "snippet": "getSetItem",
+    "output": "  ",
     "livePrevBox": false,
-    "multipleInputBox": false,
-    "inputText": "classyfacy",
+    "multipleInputBox": true,
+    "inputText": "pepe",
     "language": "JAVA"
 }

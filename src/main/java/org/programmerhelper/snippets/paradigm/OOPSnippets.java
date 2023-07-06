@@ -35,7 +35,7 @@ public abstract class OOPSnippets extends Snippets { //interface (gui)
 
         commonListener();
         insertLinesAtBeginningAndEnd(textPane, getSelectedLines(textPane), OOPlanguage.beginOutput.toString(), OOPlanguage.endOutput.toString());
-            listener.onTextOutput(textPane.getText());
+
 
         });//one time should be activated
 
@@ -181,6 +181,7 @@ StringBuilder errorWords=new StringBuilder();
         }
         else if(isAppend ){//appending mode
             if(textPane.getSelectedText()==null) {
+
                 currentWritingOutput(output);
                 listener.onTextOutput(textPane.getText());
 
@@ -195,7 +196,7 @@ StringBuilder errorWords=new StringBuilder();
 //                OOPlanguage.beginOutput.delete(0, OOPlanguage.beginOutput.length());
 //                OOPlanguage.endOutput.delete(0, OOPlanguage.endOutput.length());
 //
-                listener.onTextOutput(textPane.getText());
+               // listener.onTextOutput(textPane.getText());
             }
         }
         //sendOutputListener();
@@ -205,7 +206,7 @@ StringBuilder errorWords=new StringBuilder();
     }
 
     protected void OOPInterface(SNIPS snip) {
-        sendOutputListener();
+        //sendOutputListener();
 
         commonSubmitListener();
 

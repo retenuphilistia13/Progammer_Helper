@@ -137,11 +137,12 @@ endOutput.append(end);
     public String createMainClass(String userInput, String type, String accessModifier) {
 
         String begin,end;
-begin="\n  public class " + userInput + " { "+
-        "\n\n public static void main(String args[])"+"{ \n";
-end= "     System.out.println(\"\"); \n"+
-        "     }\n\n   } \n";
-       // System.out.println("\n\n"+"before main here" +beginOutput.toString()+endOutput.toString()+"\n\n");
+        begin="\n  public class " + userInput + " { \n"
+        ;
+        end= "\n    public static void main(String args[])"+"{ \n"+"     System.out.println(\"\"); \n"+
+                "     }\n\n   } \n";
+
+        // System.out.println("\n\n"+"before main here" +beginOutput.toString()+endOutput.toString()+"\n\n");
         beginOutput.append(begin);
 
         endOutput.append(end);

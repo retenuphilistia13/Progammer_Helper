@@ -58,7 +58,10 @@ public abstract class Snippets extends JPanel implements ReservedWordsProvider {
 
     }
 
+public String getTextPaneText(){
+        return textPane.getText();
 
+}
     protected abstract void setInterface();
 
     protected abstract void languageInterface();
@@ -91,29 +94,46 @@ public abstract class Snippets extends JPanel implements ReservedWordsProvider {
 
     }
 
-    protected void sendOutputListener(){
-
-        SwingUtilities.invokeLater(() -> {//send "real time" output to programmer Helper
+    protected void sendOutputListener() {
+        SwingUtilities.invokeLater(() -> {
             textPane.getDocument().addDocumentListener(new DocumentListener() {
+                private Timer timer; // Declare a Timer instance
+
                 @Override
                 public void insertUpdate(DocumentEvent e) {
-                    listener.onTextOutput(textPane.getText());
+                    if (timer != null) {
+                        timer.stop(); // Stop the previous timer if it's running
+                    }
+
+                    timer = new Timer(500, (ActionEvent evt) -> {
+                        // Code to be executed after the delay of 500 milliseconds
+                        listener.onTextOutput(textPane.getText());
+                    });
+
+                    timer.setRepeats(false); // Set the timer to execute only once
+                    timer.start(); // Start the timer
                 }
 
                 @Override
                 public void removeUpdate(DocumentEvent e) {
-                    listener.onTextOutput(textPane.getText());
+                    if (timer != null) {
+                        timer.stop();
+                    }
+
+                    timer = new Timer(500, (ActionEvent evt) -> {
+                        listener.onTextOutput(textPane.getText());
+                    });
+
+                    timer.setRepeats(false);
+                    timer.start();
                 }
 
                 @Override
                 public void changedUpdate(DocumentEvent e) {
-                    //not good idea if you wanna remove line on text pane
-                    //listener.onTextOutput(textPane.getText());
+                    // No need to add a timer here, as you mentioned it's not a good idea
                 }
             });
-
         });
-
     }
 
 
@@ -156,37 +176,37 @@ public abstract class Snippets extends JPanel implements ReservedWordsProvider {
 
     protected void insertLinesAtBeginningAndEnd(JTextComponent textComponent, String lines,String begin,String end) {
 
+        if(textPane.getSelectedText()!=null) {
+            try {
+                int selectionStart = textComponent.getSelectionStart();
 
-if(textPane.getSelectedText()!=null)
-    try {
-        int selectionStart = textComponent.getSelectionStart();
+                Document doc = textComponent.getDocument();
+                int docLength = doc.getLength();
+                if (selectionStart > docLength) {
+                    selectionStart = docLength; // Limit start position to document length
+                }
+                doc.insertString(selectionStart, begin, null);
 
-        Document doc = textComponent.getDocument();
-        int docLength = doc.getLength();
-        if (selectionStart > docLength) {
-            selectionStart = docLength; // Limit start position to document length
+
+                int insertionIndex = selectionStart + begin.length() + lines.length();
+
+
+                // Check if the insertion index is not at the end of a line
+                Element root = doc.getDefaultRootElement();
+                int line = root.getElementIndex(insertionIndex);
+                Element lineElement = root.getElement(line);
+                int lineEnd = lineElement.getEndOffset() - 1; // Exclude the line break character
+                if (insertionIndex < lineEnd) {
+                    // Move the insertion index to the beginning of the next line
+                    insertionIndex = lineEnd + 1; // Add 1 to position after the line break
+                }
+
+                doc.insertString(insertionIndex, end, null);
+            } catch (BadLocationException ex) {
+                ex.printStackTrace();
+            }
+            listener.onTextOutput(textPane.getText());
         }
-        doc.insertString(selectionStart, begin, null);
-
-
-        int insertionIndex = selectionStart + begin.length() + lines.length();
-
-
-        // Check if the insertion index is not at the end of a line
-        Element root = doc.getDefaultRootElement();
-        int line = root.getElementIndex(insertionIndex);
-        Element lineElement = root.getElement(line);
-        int lineEnd = lineElement.getEndOffset() - 1; // Exclude the line break character
-        if (insertionIndex < lineEnd) {
-            // Move the insertion index to the beginning of the next line
-            insertionIndex = lineEnd + 1; // Add 1 to position after the line break
-        }
-
-        doc.insertString(insertionIndex, end, null);
-    } catch (BadLocationException ex) {
-        ex.printStackTrace();
-    }
-
 
     }
 
@@ -257,45 +277,45 @@ if(textPane.getSelectedText()!=null)
 
 //////////////////////// components listner//////////////////////////
 
-        textField.getDocument().addDocumentListener(new DocumentListener() {//to make time from input to input (for no runtime error)
-            private Timer timer;
-            @Override
-            public void insertUpdate(DocumentEvent e) {updateTextInput();}
-            @Override
-            public void removeUpdate(DocumentEvent e) {updateTextInput();}
-            @Override
-            public void changedUpdate(DocumentEvent e) {updateTextInput();}
-
-            private void updateTextInput() {
-                if (timer != null && timer.isRunning()) {
-                    timer.restart();
-                } else {
-                    timer = new Timer(5, (ActionEvent actionEvent) -> {//timer for handling to many inputs
-
-                    });
-                    timer.setRepeats(false);
-                    timer.start();
-                }
-                try {
-                    userInput = textField.getDocument().getText(0, textField.getDocument().getLength());
-
-                    listener.onTextSubmitted(userInput);
-
-                } catch (BadLocationException ex) {
-                    Logger.getLogger(JavaSnippets.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        });
+//        textField.getDocument().addDocumentListener(new DocumentListener() {//to make time from input to input (for no runtime error)
+//            private Timer timer;
+//            @Override
+//            public void insertUpdate(DocumentEvent e) {updateTextInput();}
+//            @Override
+//            public void removeUpdate(DocumentEvent e) {updateTextInput();}
+//            @Override
+//            public void changedUpdate(DocumentEvent e) {updateTextInput();}
+//
+//            private void updateTextInput() {
+//                if (timer != null && timer.isRunning()) {
+//                    timer.restart();
+//                } else {
+//                    timer = new Timer(5, (ActionEvent actionEvent) -> {//timer for handling to many inputs
+//
+//                    });
+//                    timer.setRepeats(false);
+//                    timer.start();
+//                }
+//                try {
+//                    userInput = textField.getDocument().getText(0, textField.getDocument().getLength());
+//
+//                    listener.onTextSubmitted(userInput);
+//
+//                } catch (BadLocationException ex) {
+//                    Logger.getLogger(JavaSnippets.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//            }
+//        });
 
         livePrevBox.addItemListener((ItemEvent e) -> {
         SwingUtilities.invokeLater(textField::requestFocusInWindow);
 
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 livePrev = true;
-                //commonListener();
+                commonListener();
             } else if(e.getStateChange() == ItemEvent.DESELECTED){
                 livePrev = false;
-                //commonListener();
+                commonListener();
             }
             listener.onLivePreview(livePrev);
         });
@@ -354,6 +374,10 @@ if(textPane.getSelectedText()!=null)
 
     public String getOriginalInput() {
         return this.originalInput;
+    }
+
+    public String getInputText(){
+        return textField.getText();
     }
 
     protected void setComponentProperty(int gridx, int gridy, int gridWidth, int gridheight, double weightx, double weighty) {
