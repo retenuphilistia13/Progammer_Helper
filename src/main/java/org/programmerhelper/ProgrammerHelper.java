@@ -333,24 +333,25 @@ boolean isNavigating;
             OOPLanguage = new Java();
             language = OOPLanguage.getLanguageType();
 
-            if (!flagFirstActivity&&isNavigating==false) {
-                System.out.println("\n\nflagFirstActivity: "+e+"\n\n");
-                //actionManager.addToUndoStack(eventHandler.handleOOPFirstEvent(e, snipList, snippet));
-
-                e = eventHandler.handleOOPFirstEvent(e, snipList, snippet);
-
-            }
+            removeFromFrame();
+//            if (!flagFirstActivity&&isNavigating==false) {
+//                System.out.println("\n\nflagFirstActivity: "+e+"\n\n");
+//                //actionManager.addToUndoStack(eventHandler.handleOOPFirstEvent(e, snipList, snippet));
+//
+//                e = eventHandler.handleOOPFirstEvent(e, snipList, snippet);
+//
+//            }
 
 
                 System.out.println("language "+language+"prev language"+prevLanguage);
-                if (OOPLastAction != null&&isNavigating==false) {
-                    if (OOPLastAction.getSource() == getSetItem || OOPLastAction.getSource() == classItem || OOPLastAction.getSource() == mainClass) {
-                        System.out.println("OOPLastAction: "+OOPLastAction);
-                        //actionManager.addToUndoStack(OOPLastAction);
-                        e = OOPLastAction; //refrech when user alternate between the two language; the last action(getters setters would be saved)
-
-                    }
-                }
+//                if (OOPLastAction != null&&isNavigating==false) {
+//                    if (OOPLastAction.getSource() == getSetItem || OOPLastAction.getSource() == classItem || OOPLastAction.getSource() == mainClass) {
+//                        System.out.println("OOPLastAction: "+OOPLastAction);
+//                        //actionManager.addToUndoStack(OOPLastAction);
+//                        e = OOPLastAction; //refrech when user alternate between the two language; the last action(getters setters would be saved)
+//
+//                    }
+//                }
 
 
         } else if (e.getSource() == cPlusPlusItem) {
@@ -362,20 +363,22 @@ boolean isNavigating;
             OOPLanguage = new C_Plus_Plus();
             language = OOPLanguage.getLanguageType();
 
-            if (!flagFirstActivity&&isNavigating==false) {
-                System.out.println("\n\nflagFirstActivity: "+e+"\n\n");
-                actionManager.addToUndoStack(eventHandler.handleOOPFirstEvent(e, snipList, snippet));
-                e = eventHandler.handleOOPFirstEvent(e, snipList, snippet);
+            removeFromFrame();
+//            if (!flagFirstActivity&&isNavigating==false) {
+//                System.out.println("\n\nflagFirstActivity: "+e+"\n\n");
+//                actionManager.addToUndoStack(eventHandler.handleOOPFirstEvent(e, snipList, snippet));
+//                e = eventHandler.handleOOPFirstEvent(e, snipList, snippet);
+//
+//            }
 
-            }
-
-                if (OOPLastAction != null&&isNavigating==false) { //lastAction after is setted
-                    if (OOPLastAction.getSource() == getSetItem || OOPLastAction.getSource() == classItem || OOPLastAction.getSource() == mainClass) { //set action (save)if another oop items are selected
-                        System.out.println("OOPLastAction: "+OOPLastAction);
-                        actionManager.addToUndoStack(OOPLastAction);e = OOPLastAction;
-
-                    }
-                }
+//
+//                if (OOPLastAction != null&&isNavigating==false) { //lastAction after is setted
+//                    if (OOPLastAction.getSource() == getSetItem || OOPLastAction.getSource() == classItem || OOPLastAction.getSource() == mainClass) { //set action (save)if another oop items are selected
+//                        System.out.println("OOPLastAction: "+OOPLastAction);
+//                        actionManager.addToUndoStack(OOPLastAction);e = OOPLastAction;
+//
+//                    }
+//                }
 
 
         }
@@ -391,8 +394,10 @@ boolean isNavigating;
                 snippet = "getSetItem";
 oopSnip=OOPSnip.GETSETSNIP;
 
-                removeFromFrame();
                 isSnip=true;
+
+                removeFromFrame();
+
 
                 addOOPSnip(language); //create new panel (must do)
 
@@ -402,9 +407,9 @@ oopSnip=OOPSnip.GETSETSNIP;
             } else if (e.getSource() == classItem) {
                 snippet = "classItem";
                 oopSnip=OOPSnip.CLASSSNIP;
-
-                removeFromFrame();
                 isSnip=true;
+                removeFromFrame();
+
 
                 addOOPSnip(language); // addOOPSnip(Language);//create new panel (must do)
 
@@ -416,9 +421,9 @@ oopSnip=OOPSnip.GETSETSNIP;
                 snippet = "mainClass";
 
                 oopSnip=OOPSnip.MAINCLASSSNIP;
-
-                removeFromFrame();
                 isSnip=true;
+                removeFromFrame();
+
 
                 addOOPSnip(language); //  addOOPSnip(Language);
 
