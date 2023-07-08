@@ -34,6 +34,15 @@ public abstract class Snippets extends JPanel implements ReservedWordsProvider {
     protected GridBagConstraints c;
     protected PanelListener listener;
     protected String userInput;
+
+    public boolean isLivePrev() {
+        return livePrev;
+    }
+
+    public boolean isMultiInputs() {
+        return multiInputs;
+    }
+
     protected boolean livePrev;
     protected boolean multiInputs;
 

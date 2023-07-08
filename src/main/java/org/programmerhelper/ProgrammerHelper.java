@@ -55,7 +55,8 @@ public class ProgrammerHelper extends JFrame implements ActionListener, PanelLis
 
     OOPSnip oopSnip;
     private OutputManager <String>outputManager,inputManager;
-
+    private OutputManager <Boolean>previewManager,multipleManager;
+    private OutputManager <ActionEvent>actionManager;
     public ProgrammerHelper() {
         // Set up the frame
         setTitle("Programmer Little Helper");
@@ -69,6 +70,9 @@ public class ProgrammerHelper extends JFrame implements ActionListener, PanelLis
 
         outputManager = new OutputManager(150,50);
         inputManager=new OutputManager(150,50);
+        previewManager=new OutputManager<>(150,50);
+        multipleManager=new OutputManager<>(150,50);
+        //actionManager=new OutputManager(150,50);
 
         addWindowListener(new WindowAdapter() {
             @Override
@@ -241,6 +245,8 @@ public class ProgrammerHelper extends JFrame implements ActionListener, PanelLis
 
             outputManager.addToUndoStack(" ");
             inputManager.addToUndoStack(input);
+            previewManager.addToUndoStack(livePrev);
+            multipleManager.addToUndoStack(multi);
             javaSnip = new JavaSnippets(OOPLanguage, this, input, multi, livePrev);
 
             createSnippet();
@@ -250,6 +256,9 @@ public class ProgrammerHelper extends JFrame implements ActionListener, PanelLis
         } else if (cPlusPlusItem.isSelected() && CPlusPlusSnip == null && !flagFirstActivity) {
             outputManager.addToUndoStack(" ");
             inputManager.addToUndoStack(input);
+
+            previewManager.addToUndoStack(livePrev);
+            multipleManager.addToUndoStack(multi);
 
             OOPLanguage = new C_Plus_Plus();
             isSnip=false;
@@ -276,37 +285,6 @@ public class ProgrammerHelper extends JFrame implements ActionListener, PanelLis
     }
 
 
-private String getCurrentOutput(Language language) {
-    switch (language) {
-        case JAVA -> {
-            return javaSnip.getTextPaneText();
-        }
-        case CPLUSPLUS -> {
-            return CPlusPlusSnip.getTextPaneText();
-        }
-        default -> {
-            return javaSnip.getTextPaneText();
-        }
-    }
-    //    output = javaSnip.getTextPaneText();
-//    output = CPlusPlusSnip.getTextPaneText();
-
-}
-
-    private String getCurrentInput(Language language){
-        switch (language) {
-            case JAVA -> {
-                return javaSnip.getInputText();
-            }
-            case CPLUSPLUS -> {
-                return CPlusPlusSnip.getInputText();
-            }
-            default -> {
-                return javaSnip.getInputText();
-            }
-        }
-    }
-
 boolean isNavigating;
 
     @Override
@@ -321,16 +299,27 @@ boolean isNavigating;
         if (e.getSource() == undoMenuItem) {
             outputManager.undo(); // Call the undo method of the outputManager
             inputManager.undo();
+            multipleManager.undo();
+            previewManager.undo();
+//            actionManager.undo();
+//           e=actionManager.getUndoStack();
             isNavigating=true;
         }
         else if (e.getSource() == redoMenuItem) {
             outputManager.redo(); // Call the redo method of the outputManager
             inputManager.redo();
+            multipleManager.redo();
+            previewManager.redo();
+//            actionManager.redo();
+//            e= actionManager.getUndoStack();
             isNavigating=true;
         }
         else if (e.getSource()==saveMenuItem) {
             outputManager.addToUndoStack(getCurrentOutput(language));
             inputManager.addToUndoStack(getCurrentInput(language));
+            previewManager.addToUndoStack(getCurrentPreview(language));
+            multipleManager.addToUndoStack(getCurrentMultiInput(language));
+            //multipleManager.addToUndoStack();
         }
 
 
@@ -344,15 +333,22 @@ boolean isNavigating;
             OOPLanguage = new Java();
             language = OOPLanguage.getLanguageType();
 
-            if (!flagFirstActivity) {
+            if (!flagFirstActivity&&isNavigating==false) {
+                System.out.println("\n\nflagFirstActivity: "+e+"\n\n");
+                //actionManager.addToUndoStack(eventHandler.handleOOPFirstEvent(e, snipList, snippet));
+
                 e = eventHandler.handleOOPFirstEvent(e, snipList, snippet);
+
             }
 
 
                 System.out.println("language "+language+"prev language"+prevLanguage);
-                if (OOPLastAction != null) {
+                if (OOPLastAction != null&&isNavigating==false) {
                     if (OOPLastAction.getSource() == getSetItem || OOPLastAction.getSource() == classItem || OOPLastAction.getSource() == mainClass) {
+                        System.out.println("OOPLastAction: "+OOPLastAction);
+                        //actionManager.addToUndoStack(OOPLastAction);
                         e = OOPLastAction; //refrech when user alternate between the two language; the last action(getters setters would be saved)
+
                     }
                 }
 
@@ -366,13 +362,18 @@ boolean isNavigating;
             OOPLanguage = new C_Plus_Plus();
             language = OOPLanguage.getLanguageType();
 
-            if (!flagFirstActivity) {
+            if (!flagFirstActivity&&isNavigating==false) {
+                System.out.println("\n\nflagFirstActivity: "+e+"\n\n");
+                actionManager.addToUndoStack(eventHandler.handleOOPFirstEvent(e, snipList, snippet));
                 e = eventHandler.handleOOPFirstEvent(e, snipList, snippet);
+
             }
 
-                if (OOPLastAction != null) { //lastAction after is setted
+                if (OOPLastAction != null&&isNavigating==false) { //lastAction after is setted
                     if (OOPLastAction.getSource() == getSetItem || OOPLastAction.getSource() == classItem || OOPLastAction.getSource() == mainClass) { //set action (save)if another oop items are selected
-                        e = OOPLastAction;
+                        System.out.println("OOPLastAction: "+OOPLastAction);
+                        actionManager.addToUndoStack(OOPLastAction);e = OOPLastAction;
+
                     }
                 }
 
@@ -383,6 +384,7 @@ boolean isNavigating;
 
             if(e.getSource() == getSetItem || e.getSource() == classItem || e.getSource() == mainClass) {
                 addCurrentAction();
+
             }
 
             if (e.getSource() == getSetItem) { //common between c++ and java
@@ -435,30 +437,37 @@ oopSnip=OOPSnip.GETSETSNIP;
 
             OOPLastAction = e;
         }
+isNavigating=false;
         //end if
         LastAction=e;
     }
-
+    private void addCurrentAction(){
+        outputManager.addToUndoStack(getCurrentOutput(language));
+        inputManager.addToUndoStack(getCurrentInput(language));
+        previewManager.addToUndoStack(getCurrentPreview(language));
+        multipleManager.addToUndoStack(getCurrentMultiInput(language));
+    }
     public void sendOOPPrefrences(Language language1){
 
         switch (language1){
             case JAVA -> {
-                javaSnip.setPrevBox(livePrev);
-                javaSnip.setMultipleInputs(multi);
+                javaSnip.setPrevBox(previewManager.getUndoStack());
+                javaSnip.setMultipleInputs(multipleManager.getUndoStack());
 
-    javaSnip.setUserInput(inputManager.getUndoStack());
-    javaSnip.setOutput(outputManager.getUndoStack());
+
+                    javaSnip.setUserInput(inputManager.getUndoStack());
+                    javaSnip.setOutput(outputManager.getUndoStack());
 
 
                 // System.out.println("output "+output);
             }
             case CPLUSPLUS -> {
 
-                CPlusPlusSnip.setPrevBox(livePrev);
-                CPlusPlusSnip.setMultipleInputs(multi);
+                CPlusPlusSnip.setPrevBox(previewManager.getUndoStack());
+                CPlusPlusSnip.setMultipleInputs(multipleManager.getUndoStack());
 
-    CPlusPlusSnip.setUserInput(inputManager.getUndoStack());
-    CPlusPlusSnip.setOutput(outputManager.getUndoStack());
+                    CPlusPlusSnip.setUserInput(inputManager.getUndoStack());
+                    CPlusPlusSnip.setOutput(outputManager.getUndoStack());
 
             }
         }
@@ -546,6 +555,9 @@ Language lan;
         inputManager.addToUndoStack(input);
 
         outputManager.addToUndoStack(output);
+        previewManager.addToUndoStack(multi);
+        multipleManager.addToUndoStack(livePrev);
+
         outputManager.getSize();
 
     }
@@ -579,9 +591,65 @@ Language lan;
     }
 
 
-private void addCurrentAction(){
-    outputManager.addToUndoStack(getCurrentOutput(language));
-    inputManager.addToUndoStack(getCurrentInput(language));
-}
+
+
+    private String getCurrentOutput(Language language) {
+        switch (prevLanguage) {
+            case JAVA -> {
+                return javaSnip.getTextPaneText();
+            }
+            case CPLUSPLUS -> {
+                return CPlusPlusSnip.getTextPaneText();
+            }
+            default -> {
+                return javaSnip.getTextPaneText();
+            }
+        }
+        //    output = javaSnip.getTextPaneText();
+//    output = CPlusPlusSnip.getTextPaneText();
+
+    }
+
+    private String getCurrentInput(Language language){
+        switch (prevLanguage) {
+            case JAVA -> {
+                return javaSnip.getInputText();
+            }
+            case CPLUSPLUS -> {
+                return CPlusPlusSnip.getInputText();
+            }
+            default -> {
+                return javaSnip.getInputText();
+            }
+        }
+    }
+
+    private boolean getCurrentPreview(Language language){
+        switch (prevLanguage) {
+            case JAVA -> {
+                return javaSnip.isLivePrev();
+            }
+            case CPLUSPLUS -> {
+                return CPlusPlusSnip.isLivePrev();
+            }
+            default -> {
+                 return javaSnip.isLivePrev();
+            }
+        }
+    }
+
+    private boolean getCurrentMultiInput(Language language){
+        switch (prevLanguage) {
+            case JAVA -> {
+                return javaSnip.isMultiInputs();
+            }
+            case CPLUSPLUS -> {
+                return CPlusPlusSnip.isMultiInputs();
+            }
+            default -> {
+                return javaSnip.isMultiInputs();
+            }
+        }
+    }
 
 }

@@ -1,41 +1,33 @@
-
 package org.programmerhelper;
 
-        import java.util.Stack;
+import java.util.Stack;
 
-public class OutputManager <T>{
-    public T getUndoStack() {
-
-        return undoStack.peek();
-
-    }
-    public void getSize(){
-        System.out.println("\n\nundoStack size\n\n"+undoStack.size());
-    }
+public class OutputManager<T> {
     private Stack<T> undoStack;
     private Stack<T> redoStack;
-    private   int undoCapacity = 100;
-    private   int redoCapacity = 100;
+    private int undoCapacity = 100;
+    private int redoCapacity = 100;
+
     public OutputManager() {
         undoStack = new Stack<>();
         redoStack = new Stack<>();
     }
 
-    public OutputManager(int undoCapacity,int redoCapacity) {
+    public OutputManager(int undoCapacity, int redoCapacity) {
         undoStack = new Stack<>();
         redoStack = new Stack<>();
-
-        this.redoCapacity =redoCapacity;
-        this.undoCapacity =undoCapacity;
-
+        this.redoCapacity = redoCapacity;
+        this.undoCapacity = undoCapacity;
     }
 
     public void addToUndoStack(T action) {
-        if (!undoStack.isEmpty()&& undoStack.peek().equals(action)) {
+        if (!undoStack.isEmpty() && undoStack.peek().equals(action)) {
             // Ignore duplicate output
             return;
-        } else if (undoStack.isEmpty()) {//first action
+        } else if (undoStack.isEmpty()) {
+            // First action
             undoStack.push(action);
+            redoStack.clear();
         }
         if (undoStack.size() >= undoCapacity) {
             undoStack.remove(0); // Remove the oldest action
@@ -69,5 +61,17 @@ public class OutputManager <T>{
         } else {
             System.out.println("Nothing to redo.");
         }
+    }
+
+    public T getUndoStack() {
+        if (!undoStack.isEmpty()) {
+            return undoStack.peek();
+        } else {
+            return null;
+        }
+    }
+
+    public void getSize() {
+        System.out.println("undoStack size: " + undoStack.size());
     }
 }
