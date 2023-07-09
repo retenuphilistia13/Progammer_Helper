@@ -21,7 +21,7 @@ public class OutputManager<T> {
     }
 
     public void addToUndoStack(T action) {
-        if (!undoStack.isEmpty() && undoStack.peek().equals(action)) {
+        if (!undoStack.isEmpty() && undoStack.contains(action)) {
             // Ignore duplicate output
             return;
         } else if (undoStack.isEmpty()) {
