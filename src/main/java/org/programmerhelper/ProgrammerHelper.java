@@ -10,9 +10,8 @@ package org.programmerhelper;
 import org.programmerhelper.paradigm.OOPLanguage;
 import org.programmerhelper.paradigm.language.C_Plus_Plus;
 import org.programmerhelper.paradigm.language.Java;
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.Toolkit;
+
+import java.awt.*;
 import java.awt.event.*;
 
 import javax.swing.*;
@@ -285,7 +284,31 @@ public class ProgrammerHelper extends JFrame implements ActionListener, PanelLis
         setVisible(true);
     }
 
+    static class CloseableTabComponent extends JPanel {
+        private final JTabbedPane tabbedPane;
+        private final int tabIndex;
 
+        public CloseableTabComponent(JTabbedPane tabbedPane, int tabIndex) {
+            super(new BorderLayout());
+            this.tabbedPane = tabbedPane;
+            this.tabIndex = tabIndex;
+            setOpaque(false);
+
+            // Create label for tab title
+            JLabel titleLabel = new JLabel(tabbedPane.getTitleAt(tabIndex));
+            add(titleLabel, BorderLayout.CENTER);
+
+            // Create close button
+
+            JButton closeButton = new JButton("X");
+            closeButton.setPreferredSize(new Dimension(12, 12));
+            //closeButton.setIcon(new ImageIcon("close_icon.png")); // Replace "close_icon.png" with your actual icon path
+            closeButton.setMargin(new Insets(0, 0, 0, 0));
+
+            closeButton.addActionListener(e -> tabbedPane.removeTabAt(tabIndex));
+            add(closeButton, BorderLayout.LINE_END);
+        }
+    }
 
     //main
 
@@ -434,12 +457,18 @@ public class ProgrammerHelper extends JFrame implements ActionListener, PanelLis
 
     private void addNewTab(JPanel panel) {
         tabbedPane.addTab("tabTitle", panel);
+        for (int i = 0; i < tabbedPane.getTabCount(); i++) {
+            tabbedPane.setTabComponentAt(i, new CloseableTabComponent(tabbedPane, i));
+        }
     }
     private void updateTab(){
         //tabbedPane.remove(removeFromFrame());
         removeFromFrame();
         removeSelectedTab();
         tabbedPane.add("update tap",addOOPSnip(language));
+        for (int i = 0; i < tabbedPane.getTabCount(); i++) {
+            tabbedPane.setTabComponentAt(i, new CloseableTabComponent(tabbedPane, i));
+        }
     }
     private void removeSelectedTab() {
         int selectedIndex = tabbedPane.getSelectedIndex();
