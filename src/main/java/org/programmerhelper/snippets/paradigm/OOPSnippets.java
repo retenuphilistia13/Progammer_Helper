@@ -170,7 +170,7 @@ StringBuilder errorWords=new StringBuilder();
 
         if(livePrev) {
             textPane.setText(output);
-            listener.onTextOutput(textPane.getText());
+            //listener.onTextOutput(textPane.getText());
 
         }else if(flagSubmitted&&isAppend==false){
                 textPane.setText(output);

@@ -30,10 +30,10 @@ public class ProgrammerHelper extends JFrame implements ActionListener, PanelLis
     ActionEvent OOPLastAction;
     ActionEvent LastAction;
     OOPLanguage OOPLanguage;
-    //OOPSnippets OOPSnip;
+
     EventHandler eventHandler;
-    JavaSnippets javaSnip;
-    C_Plus_PlusSnippets CPlusPlusSnip;
+    public JavaSnippets javaSnip;
+    public C_Plus_PlusSnippets CPlusPlusSnip;
     JMenuBar menuBar;
     JMenu snippetsMenu, languageMenu;
     JMenu edits;
@@ -49,11 +49,9 @@ public class ProgrammerHelper extends JFrame implements ActionListener, PanelLis
     boolean isSnip,isOOP;
     ArrayList<JMenuItem> snipList;
 
-    JMenuItem undoMenuItem = new JMenuItem("Undo");
-    JMenuItem redoMenuItem = new JMenuItem("Redo");
-    JMenuItem saveMenuItem = new JMenuItem("Save");
-
-    OOPSnip oopSnip;
+    JMenuItem undoMenuItem, redoMenuItem,saveMenuItem;
+    JMenuItem tabbedMenuItem;
+    public OOPSnip oopSnip;
     private OutputManager <String>outputManager,inputManager;
     private OutputManager <Boolean>previewManager,multipleManager;
     private OutputManager <ActionEvent>actionManager;
@@ -61,7 +59,10 @@ public class ProgrammerHelper extends JFrame implements ActionListener, PanelLis
         // Set up the frame
         setTitle("Programmer Little Helper");
 
-
+         undoMenuItem = new JMenuItem("Undo");
+         redoMenuItem = new JMenuItem("Redo");
+         saveMenuItem = new JMenuItem("Save");
+        tabbedMenuItem=new JMenuItem("add new tab");
 
         setSize(600, 700);
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -139,6 +140,7 @@ public class ProgrammerHelper extends JFrame implements ActionListener, PanelLis
         edits.add(saveMenuItem);
         edits.add(undoMenuItem);
         edits.add(redoMenuItem);
+        edits.add(tabbedMenuItem);
 
 
         //do redo save shortcuts
@@ -178,16 +180,13 @@ public class ProgrammerHelper extends JFrame implements ActionListener, PanelLis
 
 
         switch (snippet) { //to do
-            case "getSetItem" -> {
-                oopSnip=OOPSnip.GETSETSNIP;
+            case "getSetItem" -> {oopSnip=OOPSnip.GETSETSNIP;
                 getSetItem.setSelected(true);
             }
-            case "classItem" -> {
-                oopSnip=OOPSnip.CLASSSNIP;
+            case "classItem" -> {oopSnip=OOPSnip.CLASSSNIP;
                 classItem.setSelected(true);
             }
-            case "mainClass" -> {
-                oopSnip=OOPSnip.MAINCLASSSNIP;
+            case "mainClass" -> {oopSnip=OOPSnip.MAINCLASSSNIP;
                 mainClass.setSelected(true);
             }
             default -> {
@@ -237,28 +236,34 @@ public class ProgrammerHelper extends JFrame implements ActionListener, PanelLis
         classItem.addActionListener(OOPSnipGroupListener);
         mainClass.addActionListener(OOPSnipGroupListener);
 
+        // Create a JTabbedPane
+        tabbedPane = new JTabbedPane();
+//        tabbedMenuItem.addActionListener(e->{
+//            addNewTab(addOOPSnip(language));
+//        });
         flagFirstActivity = false;
         //////////activate first snip////////
+        outputManager.addToUndoStack(" ");
+
+        inputManager.addToUndoStack(input);
+        previewManager.addToUndoStack(livePrev);
+        multipleManager.addToUndoStack(multi);
+
         if (javaItem.isSelected() && javaSnip == null && !flagFirstActivity) { //one time activation if its saved in a file (extra &&flagFirstActivity==false)
             OOPLanguage = new Java();
             isSnip=false;
 
-            outputManager.addToUndoStack(" ");
-            inputManager.addToUndoStack(input);
-            previewManager.addToUndoStack(livePrev);
-            multipleManager.addToUndoStack(multi);
+
             javaSnip = new JavaSnippets(OOPLanguage, this, input, multi, livePrev);
 
             createSnippet();
 
-            addToFrame();
+            addNewTab(javaSnip);
+
+            //addToFrame();
 
         } else if (cPlusPlusItem.isSelected() && CPlusPlusSnip == null && !flagFirstActivity) {
-            outputManager.addToUndoStack(" ");
-            inputManager.addToUndoStack(input);
 
-            previewManager.addToUndoStack(livePrev);
-            multipleManager.addToUndoStack(multi);
 
             OOPLanguage = new C_Plus_Plus();
             isSnip=false;
@@ -267,9 +272,15 @@ public class ProgrammerHelper extends JFrame implements ActionListener, PanelLis
 
             createSnippet();
 
-            addToFrame();
+           addNewTab(CPlusPlusSnip);
+
+            //addToFrame();
         }
 
+
+
+        // Add the JTabbedPane to the main frame
+        getContentPane().add(tabbedPane, BorderLayout.CENTER);
 
         setVisible(true);
     }
@@ -301,8 +312,7 @@ boolean isNavigating;
             inputManager.undo();
             multipleManager.undo();
             previewManager.undo();
-//            actionManager.undo();
-//           e=actionManager.getUndoStack();
+
             isNavigating=true;
         }
         else if (e.getSource() == redoMenuItem) {
@@ -310,16 +320,15 @@ boolean isNavigating;
             inputManager.redo();
             multipleManager.redo();
             previewManager.redo();
-//            actionManager.redo();
-//            e= actionManager.getUndoStack();
+
             isNavigating=true;
         }
         else if (e.getSource()==saveMenuItem) {
-            outputManager.addToUndoStack(getCurrentOutput(language));
-            inputManager.addToUndoStack(getCurrentInput(language));
-            previewManager.addToUndoStack(getCurrentPreview(language));
-            multipleManager.addToUndoStack(getCurrentMultiInput(language));
-            //multipleManager.addToUndoStack();
+            outputManager.addToUndoStack(getCurrentOutput());
+            inputManager.addToUndoStack(getCurrentInput());
+            previewManager.addToUndoStack(getCurrentPreview());
+            multipleManager.addToUndoStack(getCurrentMultiInput());
+
         }
 
 
@@ -333,25 +342,11 @@ boolean isNavigating;
             OOPLanguage = new Java();
             language = OOPLanguage.getLanguageType();
 
-            removeFromFrame();
-//            if (!flagFirstActivity&&isNavigating==false) {
-//                System.out.println("\n\nflagFirstActivity: "+e+"\n\n");
-//                //actionManager.addToUndoStack(eventHandler.handleOOPFirstEvent(e, snipList, snippet));
-//
-//                e = eventHandler.handleOOPFirstEvent(e, snipList, snippet);
-//
-//            }
+           // addNewTab();
+            //removeFromFrame();
 
 
                 System.out.println("language "+language+"prev language"+prevLanguage);
-//                if (OOPLastAction != null&&isNavigating==false) {
-//                    if (OOPLastAction.getSource() == getSetItem || OOPLastAction.getSource() == classItem || OOPLastAction.getSource() == mainClass) {
-//                        System.out.println("OOPLastAction: "+OOPLastAction);
-//                        //actionManager.addToUndoStack(OOPLastAction);
-//                        e = OOPLastAction; //refrech when user alternate between the two language; the last action(getters setters would be saved)
-//
-//                    }
-//                }
 
 
         } else if (e.getSource() == cPlusPlusItem) {
@@ -363,22 +358,8 @@ boolean isNavigating;
             OOPLanguage = new C_Plus_Plus();
             language = OOPLanguage.getLanguageType();
 
-            removeFromFrame();
-//            if (!flagFirstActivity&&isNavigating==false) {
-//                System.out.println("\n\nflagFirstActivity: "+e+"\n\n");
-//                actionManager.addToUndoStack(eventHandler.handleOOPFirstEvent(e, snipList, snippet));
-//                e = eventHandler.handleOOPFirstEvent(e, snipList, snippet);
-//
-//            }
-
-//
-//                if (OOPLastAction != null&&isNavigating==false) { //lastAction after is setted
-//                    if (OOPLastAction.getSource() == getSetItem || OOPLastAction.getSource() == classItem || OOPLastAction.getSource() == mainClass) { //set action (save)if another oop items are selected
-//                        System.out.println("OOPLastAction: "+OOPLastAction);
-//                        actionManager.addToUndoStack(OOPLastAction);e = OOPLastAction;
-//
-//                    }
-//                }
+           // addNewTab();
+            //removeFromFrame();
 
 
         }
@@ -392,44 +373,48 @@ boolean isNavigating;
 
             if (e.getSource() == getSetItem) { //common between c++ and java
                 snippet = "getSetItem";
-oopSnip=OOPSnip.GETSETSNIP;
+
+            oopSnip=OOPSnip.GETSETSNIP;
 
                 isSnip=true;
-
-                removeFromFrame();
-
-
-                addOOPSnip(language); //create new panel (must do)
-
+                updateTab();
+//
+//                removeFromFrame();
+//
+//
+//                addOOPSnip(language); //create new panel (must do)
+//
                 createSnippet();
-                addToFrame();
+//                addToFrame();
 
             } else if (e.getSource() == classItem) {
                 snippet = "classItem";
                 oopSnip=OOPSnip.CLASSSNIP;
                 isSnip=true;
-                removeFromFrame();
-
-
-                addOOPSnip(language); // addOOPSnip(Language);//create new panel (must do)
-
+                updateTab();
+//                removeFromFrame();
+//
+//
+//                addOOPSnip(language); // addOOPSnip(Language);//create new panel (must do)
+//
                 createSnippet();
-
-                addToFrame();
+//
+//                addToFrame();
 
             } else if (e.getSource() == mainClass) {
                 snippet = "mainClass";
 
                 oopSnip=OOPSnip.MAINCLASSSNIP;
                 isSnip=true;
-                removeFromFrame();
-
-
-                addOOPSnip(language); //  addOOPSnip(Language);
-
+                updateTab();
+//                removeFromFrame();
+//
+//
+//                addOOPSnip(language); //  addOOPSnip(Language);
+//
                 createSnippet();
-
-                addToFrame();
+//
+//                addToFrame();
 
             }
 
@@ -447,11 +432,35 @@ isNavigating=false;
         LastAction=e;
     }
     private void addCurrentAction(){
-        outputManager.addToUndoStack(getCurrentOutput(language));
-        inputManager.addToUndoStack(getCurrentInput(language));
-        previewManager.addToUndoStack(getCurrentPreview(language));
-        multipleManager.addToUndoStack(getCurrentMultiInput(language));
+        outputManager.addToUndoStack(getCurrentOutput());
+        inputManager.addToUndoStack(getCurrentInput());
+        previewManager.addToUndoStack(getCurrentPreview());
+        multipleManager.addToUndoStack(getCurrentMultiInput());
     }
+    private JTabbedPane tabbedPane;
+    private void addNewTab(JPanel panel) {
+
+
+        tabbedPane.addTab("tabTitle", panel);
+
+
+    }
+private void updateTab(){
+    //tabbedPane.remove(removeFromFrame());
+    removeFromFrame();
+    removeSelectedTab();
+    tabbedPane.add("update tap",addOOPSnip(language));
+}
+    private void removeSelectedTab() {
+        int selectedIndex = tabbedPane.getSelectedIndex();
+        if (selectedIndex != -1) {
+            tabbedPane.removeTabAt(selectedIndex);
+        }
+    }
+private void addNewTab(){
+tabbedPane.addTab("language",addOOPSnip(language));
+
+}
     public void sendOOPPrefrences(Language language1){
 
         switch (language1){
@@ -478,15 +487,16 @@ isNavigating=false;
         }
 
     }
-    public void addOOPSnip(Language lan) {
+    public JPanel addOOPSnip(Language lan) {
 
         switch (lan) {
             case JAVA -> {System.out.println("java intializing");
-                javaSnip = new JavaSnippets(OOPLanguage, this, input, multi, livePrev);
+               return javaSnip = new JavaSnippets(OOPLanguage, this, input, multi, livePrev);
             }
             case CPLUSPLUS -> {System.out.println("c++ intializing");
-                CPlusPlusSnip = new C_Plus_PlusSnippets(OOPLanguage, this, input, multi, livePrev);
+               return CPlusPlusSnip = new C_Plus_PlusSnippets(OOPLanguage, this, input, multi, livePrev);
             }
+            default -> {return javaSnip = new JavaSnippets(OOPLanguage, this, input, multi, livePrev);}
         }
 
     }
@@ -499,7 +509,7 @@ isNavigating=false;
         revalidate();
         repaint();
     }
-    public void removeFromFrame() {
+    public JPanel removeFromFrame() {
 
         System.out.println("\n\n");
         System.out.println("isSnip "+isSnip+"\n");
@@ -519,17 +529,23 @@ Language lan;
         switch (lan){
             case JAVA -> {
                 if(javaSnip!=null)remove(javaSnip);
+                revalidate();
+                repaint();
+                return javaSnip;
             }
             case CPLUSPLUS -> {
                 if(CPlusPlusSnip!=null)remove(CPlusPlusSnip);
+                revalidate();
+                repaint();
+                return CPlusPlusSnip;
             }
+            default -> {return javaSnip;}
         }
 
 
-        System.out.println("\n\n");
+       // System.out.println("\n\n");
 
-        revalidate();
-        repaint();
+
     }
 
     @Override
@@ -558,7 +574,6 @@ Language lan;
     private void synchroniseSaving(){
 
         inputManager.addToUndoStack(input);
-
         outputManager.addToUndoStack(output);
         previewManager.addToUndoStack(multi);
         multipleManager.addToUndoStack(livePrev);
@@ -567,38 +582,22 @@ Language lan;
 
     }
 
-    public void createSnippet() {
-        switch (language) {
-            case JAVA -> {handleJavaSnippet();}
-            case CPLUSPLUS -> {handleCPlusPlusSnippet();}
-        }
-    }
 
-
-    private void handleJavaSnippet() {
-        switch (oopSnip) {
-            case GETSETSNIP -> javaSnip.gettersSetters();
-            case MAINCLASSSNIP -> javaSnip.createMainClass();
-            default -> {javaSnip.createClass();}
-        }
-    }
-
-    private void handleCPlusPlusSnippet() {
-        switch (oopSnip) {
-            case GETSETSNIP -> CPlusPlusSnip.gettersSetters();
-            case MAINCLASSSNIP -> CPlusPlusSnip.createMainClass();
-            default -> {CPlusPlusSnip.createClass();}
-        }
-    }
 
     private void performLastAction() {//saving properties
         fileHandle.updateJSONFile(filePath, language, snippet, input, livePrev, multi);
     }
 
 
+    public void createSnippet() {
 
+        switch (language) {
+            case JAVA -> {eventHandler.handleJavaSnippet(oopSnip,javaSnip);}
+            case CPLUSPLUS -> {eventHandler.handleCPlusPlusSnippet(oopSnip,CPlusPlusSnip);}
+        }
+    }
 
-    private String getCurrentOutput(Language language) {
+    private String getCurrentOutput() {
         switch (prevLanguage) {
             case JAVA -> {
                 return javaSnip.getTextPaneText();
@@ -615,7 +614,7 @@ Language lan;
 
     }
 
-    private String getCurrentInput(Language language){
+    private String getCurrentInput(){
         switch (prevLanguage) {
             case JAVA -> {
                 return javaSnip.getInputText();
@@ -629,7 +628,7 @@ Language lan;
         }
     }
 
-    private boolean getCurrentPreview(Language language){
+    private boolean getCurrentPreview(){
         switch (prevLanguage) {
             case JAVA -> {
                 return javaSnip.isLivePrev();
@@ -643,7 +642,7 @@ Language lan;
         }
     }
 
-    private boolean getCurrentMultiInput(Language language){
+    private boolean getCurrentMultiInput(){
         switch (prevLanguage) {
             case JAVA -> {
                 return javaSnip.isMultiInputs();

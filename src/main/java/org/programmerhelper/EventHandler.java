@@ -5,6 +5,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
+import org.programmerhelper.ProgrammerHelper;
+import org.programmerhelper.OOPSnip;
+import org.programmerhelper.snippets.paradigm.language.C_Plus_PlusSnippets;
+import org.programmerhelper.snippets.paradigm.language.JavaSnippets;
 
 public class EventHandler {
     ActionListener createLanguageGroupListener(ArrayList<JMenuItem> languageList) {//set selected menu item to true while other menus false
@@ -42,25 +46,22 @@ public class EventHandler {
 
         };
     }
-    public ActionEvent handleOOPFirstEvent(ActionEvent e,ArrayList<JMenuItem>snipList,String snippet) {
-        int snippetIndex = -1;  // Default index if snippet is not found
 
-        // Find the index of the snippet in the snipList
-        for (int i = 0; i < snipList.size(); i++) {
-            if (snipList.get(i).getActionCommand().equals(snippet)) {
-                snippetIndex = i;
-                break;
-            }
+
+    public void handleJavaSnippet(OOPSnip oopSnip, JavaSnippets javaSnip) {
+        switch (oopSnip) {
+            case GETSETSNIP -> javaSnip.gettersSetters();
+            case MAINCLASSSNIP -> javaSnip.createMainClass();
+            default -> {javaSnip.createClass();}
         }
-
-        if (snippetIndex != -1) {
-            JMenuItem selectedSnippet = snipList.get(snippetIndex);
-            return new ActionEvent(selectedSnippet, e.getID(), e.getActionCommand(), e.getModifiers());
-        } else {
-            System.out.println("Snippet not found: " + snippet);
-            return new ActionEvent(snipList.get(0), e.getID(), e.getActionCommand(), e.getModifiers());
-        }
-
-
     }
+
+    void handleCPlusPlusSnippet(OOPSnip oopSnip, C_Plus_PlusSnippets CPlusPlusSnip) {
+        switch (oopSnip) {
+            case GETSETSNIP -> CPlusPlusSnip.gettersSetters();
+            case MAINCLASSSNIP -> CPlusPlusSnip.createMainClass();
+            default -> {CPlusPlusSnip.createClass();}
+        }
+    }
+
 }
