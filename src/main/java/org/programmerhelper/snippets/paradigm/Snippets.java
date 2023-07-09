@@ -14,8 +14,6 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -232,6 +230,7 @@ public String getTextPaneText(){
     }
 
     public void setPrevBox(boolean l) {
+        livePrev=l;
         livePrevBox.setSelected(l);
     }
 

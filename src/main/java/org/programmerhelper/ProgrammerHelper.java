@@ -334,7 +334,7 @@ boolean isNavigating;
 
         //check language choice
         if (e.getSource() == javaItem) {
-            isSnip=false;
+            isSnip=true;
             isOOP=true;
 
             prevLanguage= language;
@@ -342,15 +342,17 @@ boolean isNavigating;
             OOPLanguage = new Java();
             language = OOPLanguage.getLanguageType();
 
-           // addNewTab();
-            //removeFromFrame();
+            addCurrentAction();
 
+            updateTab();
 
-                System.out.println("language "+language+"prev language"+prevLanguage);
+            createSnippet();
 
+            System.out.println("language "+language+"prev language"+prevLanguage);
 
+            sendOOPPreferences(language);
         } else if (e.getSource() == cPlusPlusItem) {
-            isSnip=false;
+            isSnip=true;
             isOOP=true;
 
             prevLanguage= language;
@@ -358,11 +360,16 @@ boolean isNavigating;
             OOPLanguage = new C_Plus_Plus();
             language = OOPLanguage.getLanguageType();
 
-           // addNewTab();
-            //removeFromFrame();
+            addCurrentAction();
+            updateTab();
 
+            createSnippet();
+
+            sendOOPPreferences(language);
 
         }
+
+
 
         if (isOOP) { //if language is OOP language
 
@@ -378,49 +385,34 @@ boolean isNavigating;
 
                 isSnip=true;
                 updateTab();
-//
-//                removeFromFrame();
-//
-//
-//                addOOPSnip(language); //create new panel (must do)
-//
+
                 createSnippet();
-//                addToFrame();
+
 
             } else if (e.getSource() == classItem) {
                 snippet = "classItem";
                 oopSnip=OOPSnip.CLASSSNIP;
                 isSnip=true;
                 updateTab();
-//                removeFromFrame();
-//
-//
-//                addOOPSnip(language); // addOOPSnip(Language);//create new panel (must do)
-//
+
                 createSnippet();
-//
-//                addToFrame();
+
 
             } else if (e.getSource() == mainClass) {
                 snippet = "mainClass";
 
                 oopSnip=OOPSnip.MAINCLASSSNIP;
                 isSnip=true;
+
                 updateTab();
-//                removeFromFrame();
-//
-//
-//                addOOPSnip(language); //  addOOPSnip(Language);
-//
+
                 createSnippet();
-//
-//                addToFrame();
 
             }
 
             if (e.getSource()==undoMenuItem||e.getSource()==redoMenuItem||e.getSource() == getSetItem || e.getSource() == classItem || e.getSource() == mainClass) { //set Text when entering from panel to panel
 
-                sendOOPPrefrences(language);
+                sendOOPPreferences(language);
 
                 System.out.println("text :" + input);
             }
@@ -461,25 +453,19 @@ private void addNewTab(){
 tabbedPane.addTab("language",addOOPSnip(language));
 
 }
-    public void sendOOPPrefrences(Language language1){
+    public void sendOOPPreferences(Language language1){
 
         switch (language1){
             case JAVA -> {
                 javaSnip.setPrevBox(previewManager.getUndoStack());
                 javaSnip.setMultipleInputs(multipleManager.getUndoStack());
-
-
                     javaSnip.setUserInput(inputManager.getUndoStack());
                     javaSnip.setOutput(outputManager.getUndoStack());
 
-
-                // System.out.println("output "+output);
             }
             case CPLUSPLUS -> {
-
                 CPlusPlusSnip.setPrevBox(previewManager.getUndoStack());
                 CPlusPlusSnip.setMultipleInputs(multipleManager.getUndoStack());
-
                     CPlusPlusSnip.setUserInput(inputManager.getUndoStack());
                     CPlusPlusSnip.setOutput(outputManager.getUndoStack());
 
@@ -575,8 +561,9 @@ Language lan;
 
         inputManager.addToUndoStack(input);
         outputManager.addToUndoStack(output);
-        previewManager.addToUndoStack(multi);
-        multipleManager.addToUndoStack(livePrev);
+
+        previewManager.addToUndoStack(livePrev);
+        multipleManager.addToUndoStack(multi);
 
         outputManager.getSize();
 

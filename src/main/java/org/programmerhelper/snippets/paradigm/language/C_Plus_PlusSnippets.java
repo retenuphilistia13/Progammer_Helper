@@ -13,6 +13,7 @@ public class C_Plus_PlusSnippets extends OOPSnippets {
     public C_Plus_PlusSnippets(OOPLanguage l, PanelListener listener, String text, boolean multi, boolean live) {
         super(l, listener, text, multi, live);
         language= Language.CPLUSPLUS;
+        componentInit();
     }
     SNIPS snip;
 
@@ -32,7 +33,7 @@ public class C_Plus_PlusSnippets extends OOPSnippets {
     @Override
     protected void setInterface() {
 
-        componentInit();
+
         
         livePrevListener();//live Preview Listener
         

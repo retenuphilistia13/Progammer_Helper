@@ -20,6 +20,7 @@ public class JavaSnippets extends OOPSnippets {
         super(l, listener, text, multi, live);
         java=new Java();
         language=Language.JAVA;
+        componentInit();
     }
     @Override
     protected void languageInterface() {
@@ -61,7 +62,7 @@ public class JavaSnippets extends OOPSnippets {
     protected void setInterface() {
         firstActivity=true;
 
-        componentInit();
+
 
         languageInterface();
 
