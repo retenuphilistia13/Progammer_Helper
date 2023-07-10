@@ -35,7 +35,7 @@ public class ProgrammerHelper extends JFrame implements ActionListener, PanelLis
     public ArrayList<C_Plus_PlusSnippets> CPlusPlusSnipList;
     JMenuBar menuBar;
     JMenu snippetsMenu, languageMenu;
-    JMenu edits;
+    JMenu fileMenu;
     JMenuItem showCheckboxes;
     JMenuItem getSetItem, classItem, mainClass;
     JMenuItem javaItem, cPlusPlusItem;
@@ -100,7 +100,7 @@ public class ProgrammerHelper extends JFrame implements ActionListener, PanelLis
         eventHandler = new EventHandler();
         menuBar = new JMenuBar();
 
-        edits = new JMenu("Edits");
+        fileMenu = new JMenu("File");
 
         snippetsMenu = new JMenu("Snippets");
         languageMenu = new JMenu("Language");
@@ -136,12 +136,13 @@ public class ProgrammerHelper extends JFrame implements ActionListener, PanelLis
         livePrev = fileHandle.getLivePrevBox(); //get value form file
         multi = fileHandle.getMultipleInputBox();
         input = fileHandle.getInputText();
+        output= fileHandle.getOutput();
 
+        fileMenu.add(tabbedMenuItem);
+        fileMenu.add(saveMenuItem);
+        fileMenu.add(undoMenuItem);
+        fileMenu.add(redoMenuItem);
 
-        edits.add(saveMenuItem);
-        edits.add(undoMenuItem);
-        edits.add(redoMenuItem);
-        edits.add(tabbedMenuItem);
 
 
         //do redo save shortcuts
@@ -152,7 +153,7 @@ public class ProgrammerHelper extends JFrame implements ActionListener, PanelLis
         undoMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, undoShortcutMask));
         redoMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y, redoShortcutMask));
 
-        menuBar.add(edits);
+        menuBar.add(fileMenu);
 
 
         System.out.println("language: " + lan.equals("C++") + " real:" + language);
@@ -222,6 +223,7 @@ public class ProgrammerHelper extends JFrame implements ActionListener, PanelLis
         javaItem.addActionListener(this);
         cPlusPlusItem.addActionListener(this);
 
+        tabbedMenuItem.addActionListener(this);
         undoMenuItem.addActionListener(this);
         redoMenuItem.addActionListener(this);
         saveMenuItem.addActionListener(this);
@@ -243,8 +245,8 @@ public class ProgrammerHelper extends JFrame implements ActionListener, PanelLis
         tabbedPane = new JTabbedPane();
         flagFirstActivity = false;
         //////////activate first snip////////
-        outputManager.addToUndoStack(" ");
 
+        outputManager.addToUndoStack(output);
         inputManager.addToUndoStack(input);
         previewManager.addToUndoStack(livePrev);
         multipleManager.addToUndoStack(multi);
@@ -258,8 +260,10 @@ public class ProgrammerHelper extends JFrame implements ActionListener, PanelLis
             isSnip = false;
 
             JavaSnippets javaSnip = new JavaSnippets(OOPLanguage, this, input, multi, livePrev);
-            javaSnipList.add(javaSnip);
 
+            javaSnip.setOutput(output);
+
+            javaSnipList.add(javaSnip);
             tabIndexJava +=1;
             createSnippet();
 
@@ -344,20 +348,20 @@ public class ProgrammerHelper extends JFrame implements ActionListener, PanelLis
             OOPLanguage = new Java();
             language = OOPLanguage.getLanguageType();
 
-            addCurrentAction();
+            //addCurrentAction();
 
 //            updateTab();
-            JavaSnippets javaSnip = new JavaSnippets(OOPLanguage, this, input, multi, livePrev);
-            javaSnipList.add(javaSnip);
+//            JavaSnippets javaSnip = new JavaSnippets(OOPLanguage, this, input, multi, livePrev);
+//            javaSnipList.add(javaSnip);
 
-            tabIndexJava +=1;
-            createSnippet();
+          //  tabIndexJava +=1;
+            //createSnippet();
 
-            addNewTab(javaSnipList.get(tabIndexJava));
+
 
             System.out.println("language "+language+"prev language"+prevLanguage);
 
-            sendOOPPreferences(language);
+            //sendOOPPreferences(language);
 
         } else if (e.getSource() == cPlusPlusItem) {
             isSnip=true;
@@ -368,23 +372,57 @@ public class ProgrammerHelper extends JFrame implements ActionListener, PanelLis
             OOPLanguage = new C_Plus_Plus();
             language = OOPLanguage.getLanguageType();
 
-            addCurrentAction();
+            //addCurrentAction();
 
-            C_Plus_PlusSnippets CPlusPlus = new C_Plus_PlusSnippets(OOPLanguage, this, input, multi, livePrev);
-            CPlusPlusSnipList.add(CPlusPlus);
 
-            tabIndexCPlusPlus +=1;
-            createSnippet();
+//
+//            addCurrentAction();
+//
+//            C_Plus_PlusSnippets CPlusPlus = new C_Plus_PlusSnippets(OOPLanguage, this, input, multi, livePrev);
+//            CPlusPlusSnipList.add(CPlusPlus);
+//
+//            tabIndexCPlusPlus +=1;
+//            createSnippet();
+//
+//            addNewTab(CPlusPlusSnipList.get(tabIndexCPlusPlus));
 
-            addNewTab(CPlusPlusSnipList.get(tabIndexCPlusPlus));
+
 
             System.out.println("language "+language+"prev language"+prevLanguage);
 
-            sendOOPPreferences(language);
+           // sendOOPPreferences(language);
 
         }
 
+if(e.getSource()==tabbedMenuItem){
+    addCurrentAction();
 
+switch (language){
+    case CPLUSPLUS -> {
+
+        C_Plus_PlusSnippets CPlusPlus = new C_Plus_PlusSnippets(OOPLanguage, this, input, multi, livePrev);
+        CPlusPlusSnipList.add(CPlusPlus);
+
+        tabIndexCPlusPlus +=1;
+        createSnippet();
+
+        addNewTab(CPlusPlusSnipList.get(tabIndexCPlusPlus));
+    }
+    default -> {
+        JavaSnippets javaSnippets = new JavaSnippets(OOPLanguage, this, input, multi, livePrev);
+        javaSnipList.add(javaSnippets);
+
+        tabIndexJava +=1;
+        createSnippet();
+
+        addNewTab(javaSnipList.get(tabIndexJava));
+    }
+}
+
+
+
+    sendOOPPreferences(language);
+}
 
         if (isOOP) { //if language is OOP language
 
@@ -457,7 +495,6 @@ public class ProgrammerHelper extends JFrame implements ActionListener, PanelLis
     private int tabLangaugeIndex(){
 
         switch(language){
-            case JAVA -> {return tabIndexJava;}
             case CPLUSPLUS -> {return tabIndexCPlusPlus;}
             default -> {return tabIndexJava;}
         }
@@ -533,25 +570,19 @@ private void setClosableTabs(){
         System.out.println("prevLanguage " + prevLanguage);
         System.out.println("Language " + language);
 
-        Language lan;
-
-        if (!isSnip) {
-            lan = prevLanguage;
-            System.out.println("prev language executed");
-        } else {
-            System.out.println("language executed");
-            lan = language;
-        }
+//        Language lan;
+//
+//        if (!isSnip) {
+//            lan = prevLanguage;
+//            System.out.println("prev language executed");
+//        } else {
+//            System.out.println("language executed");
+//            lan = language;
+//        }
 
         JPanel removedPanel = null;
 
         switch (language) {
-            case JAVA -> {
-                if (!javaSnipList.isEmpty()) {
-                    removedPanel = javaSnipList.remove(tabIndexJava);
-                    remove(removedPanel);
-                }
-            }
             case CPLUSPLUS-> {
                 if (!CPlusPlusSnipList.isEmpty()) {
                     removedPanel = CPlusPlusSnipList.remove(tabIndexCPlusPlus);
@@ -613,7 +644,7 @@ private void setClosableTabs(){
 
 
     private void performLastAction() {//saving properties
-        fileHandle.updateJSONFile(filePath, language, snippet, input, livePrev, multi);
+        fileHandle.updateJSONFile(filePath, language, snippet, input, getCurrentOutput(),livePrev, multi);
     }
 
 
@@ -652,9 +683,6 @@ private void setClosableTabs(){
 
     private String getCurrentOutput() {
         switch (prevLanguage) {
-            case JAVA -> {
-                return javaSnipList.get(tabIndexJava).getTextPaneText();
-            }
             case CPLUSPLUS -> {
                 return CPlusPlusSnipList.get(tabIndexCPlusPlus).getTextPaneText();
             }
@@ -669,9 +697,6 @@ private void setClosableTabs(){
 
     private String getCurrentInput(){
         switch (prevLanguage) {
-            case JAVA -> {
-                return javaSnipList.get(tabIndexJava).getInputText();
-            }
             case CPLUSPLUS -> {
                 return CPlusPlusSnipList.get(tabIndexCPlusPlus).getInputText();
             }
@@ -683,9 +708,6 @@ private void setClosableTabs(){
 
     private boolean getCurrentPreview(){
         switch (prevLanguage) {
-            case JAVA -> {
-                return javaSnipList.get(tabIndexJava).isLivePrev();
-            }
             case CPLUSPLUS -> {
                 return CPlusPlusSnipList.get(tabIndexCPlusPlus).isLivePrev();
             }
@@ -697,9 +719,6 @@ private void setClosableTabs(){
 
     private boolean getCurrentMultiInput(){
         switch (prevLanguage) {
-            case JAVA -> {
-                return javaSnipList.get(tabIndexJava).isMultiInputs();
-            }
             case CPLUSPLUS -> {
                 return CPlusPlusSnipList.get(tabIndexCPlusPlus).isMultiInputs();
             }

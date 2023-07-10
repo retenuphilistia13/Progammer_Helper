@@ -25,14 +25,25 @@ public class JSONFileHandler {
 
     private String inputText;
 
+    private String output;
     private String language;
-
-
     private String snippet;
 
     public void setSnippet(String snippet) {
 
         this.snippet = snippet;
+
+    }
+
+    public void setOutput(String output){
+
+        this.output = output;
+
+    }
+
+    public String getOutput(){
+
+        return output;
 
     }
 
@@ -102,7 +113,7 @@ public class JSONFileHandler {
                 '}';
     }
 
-    public void updateJSONFile(String filePath, Language language1, String snippet1, String inputText1, boolean livePrevBox1, boolean multipleInputBox1) {
+    public void updateJSONFile(String filePath, Language language1, String snippet1, String inputText1,String output1, boolean livePrevBox1, boolean multipleInputBox1) {
         try {
             JSONObject jsonObject;
             try ( // Read the existing JSON file
@@ -127,6 +138,11 @@ public class JSONFileHandler {
             if (!(inputText1.equals(inputText))) {
                 jsonObject.put("inputText", inputText1);
                 inputText = inputText1;
+            }
+
+            if (!(output1.equals(output))) {
+                jsonObject.put("output", output1);
+                output = output1;
             }
 
             if (livePrevBox1 != livePrevBox) {
@@ -168,6 +184,7 @@ public class JSONFileHandler {
             setInputText(jsonObject.getString("inputText"));
             setMultipleInputBox(jsonObject.getBoolean("multipleInputBox"));
 
+            setOutput(jsonObject.getString("output"));
             // Display the JSON data
 
         } catch (IOException e) {
