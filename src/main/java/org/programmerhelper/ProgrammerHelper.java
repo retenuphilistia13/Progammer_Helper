@@ -428,7 +428,7 @@ switch (language){
 
             if(e.getSource() == getSetItem || e.getSource() == classItem || e.getSource() == mainClass) {
                 addCurrentAction();
-
+                selectedIndex=getSlectedTab();
             }
 
             if (e.getSource() == getSetItem) { //common between c++ and java
@@ -506,10 +506,19 @@ switch (language){
 
         tabbedPane.add("update tap "+language+" "+ tabLangaugeIndex(),addOOPSnip(language));
 
+        setSelectedTab(selectedIndex);
+
         setClosableTabs();
     }
+    int selectedIndex=0;
+    private void setSelectedTab(int index){
+        tabbedPane.setSelectedIndex(index);
+    }
+    private int getSlectedTab(){
+             return tabbedPane.getSelectedIndex();
+    }
     private void removeSelectedTab() {
-        int selectedIndex = tabbedPane.getSelectedIndex();
+        int selectedIndex = getSlectedTab();
         if (selectedIndex != -1) {
             tabbedPane.removeTabAt(selectedIndex);
         }
