@@ -1,21 +1,15 @@
 package org.programmerhelper.snippets.paradigm.components;
 
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 
 import java.awt.Color;
 import javax.swing.*;
 import javax.swing.text.*;
 
+
 /**
- *
- * @author ahmed
- */
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ *inspired by @author saliya
+ * github repository https://github.com/stark9000/java-Syntax-Highlight
  */
 
 public class JPane extends JTextPane{

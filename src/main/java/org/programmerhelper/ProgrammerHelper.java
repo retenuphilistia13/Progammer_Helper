@@ -31,6 +31,8 @@ public class ProgrammerHelper extends JFrame implements ActionListener, PanelLis
     OOPLanguage OOPLanguage;
 
     EventHandler eventHandler;
+
+
     public ArrayList<JavaSnippets> javaSnipList;
     public ArrayList<C_Plus_PlusSnippets> CPlusPlusSnipList;
     JMenuBar menuBar;
@@ -348,20 +350,9 @@ public class ProgrammerHelper extends JFrame implements ActionListener, PanelLis
             OOPLanguage = new Java();
             language = OOPLanguage.getLanguageType();
 
-            //addCurrentAction();
-
-//            updateTab();
-//            JavaSnippets javaSnip = new JavaSnippets(OOPLanguage, this, input, multi, livePrev);
-//            javaSnipList.add(javaSnip);
-
-          //  tabIndexJava +=1;
-            //createSnippet();
-
-
 
             System.out.println("language "+language+"prev language"+prevLanguage);
 
-            //sendOOPPreferences(language);
 
         } else if (e.getSource() == cPlusPlusItem) {
             isSnip=true;
@@ -372,25 +363,7 @@ public class ProgrammerHelper extends JFrame implements ActionListener, PanelLis
             OOPLanguage = new C_Plus_Plus();
             language = OOPLanguage.getLanguageType();
 
-            //addCurrentAction();
-
-
-//
-//            addCurrentAction();
-//
-//            C_Plus_PlusSnippets CPlusPlus = new C_Plus_PlusSnippets(OOPLanguage, this, input, multi, livePrev);
-//            CPlusPlusSnipList.add(CPlusPlus);
-//
-//            tabIndexCPlusPlus +=1;
-//            createSnippet();
-//
-//            addNewTab(CPlusPlusSnipList.get(tabIndexCPlusPlus));
-
-
-
             System.out.println("language "+language+"prev language"+prevLanguage);
-
-           // sendOOPPreferences(language);
 
         }
 
@@ -428,7 +401,7 @@ switch (language){
 
             if(e.getSource() == getSetItem || e.getSource() == classItem || e.getSource() == mainClass) {
                 addCurrentAction();
-                selectedIndex=getSlectedTab();
+                selectedIndex= getSelectedTab();
             }
 
             if (e.getSource() == getSetItem) { //common between c++ and java
@@ -487,12 +460,12 @@ switch (language){
     private void addNewTab(JPanel panel) {
 //        if(flagFirstActivity)
 //        tabIndex+=1;
-        tabbedPane.addTab("tabTitle "+ tabLangaugeIndex() +" "+language.name(), panel);
+        tabbedPane.addTab("tabTitle "+ tabLanguageIndex() +" "+language.name(), panel);
         setClosableTabs();
 
     }
 
-    private int tabLangaugeIndex(){
+    private int tabLanguageIndex(){
 
         switch(language){
             case CPLUSPLUS -> {return tabIndexCPlusPlus;}
@@ -504,7 +477,7 @@ switch (language){
         removeFromFrame();
         removeSelectedTab();
 
-        tabbedPane.add("update tap "+language+" "+ tabLangaugeIndex(),addOOPSnip(language));
+        tabbedPane.add("update tap "+language+" "+ tabLanguageIndex(),addOOPSnip(language));
 
         setSelectedTab(selectedIndex);
 
@@ -514,11 +487,11 @@ switch (language){
     private void setSelectedTab(int index){
         tabbedPane.setSelectedIndex(index);
     }
-    private int getSlectedTab(){
+    private int getSelectedTab(){
              return tabbedPane.getSelectedIndex();
     }
     private void removeSelectedTab() {
-        int selectedIndex = getSlectedTab();
+        int selectedIndex = getSelectedTab();
         if (selectedIndex != -1) {
             tabbedPane.removeTabAt(selectedIndex);
         }
@@ -578,16 +551,6 @@ private void setClosableTabs(){
         System.out.println("isSnip " + isSnip + "\n");
         System.out.println("prevLanguage " + prevLanguage);
         System.out.println("Language " + language);
-
-//        Language lan;
-//
-//        if (!isSnip) {
-//            lan = prevLanguage;
-//            System.out.println("prev language executed");
-//        } else {
-//            System.out.println("language executed");
-//            lan = language;
-//        }
 
         JPanel removedPanel = null;
 
@@ -669,7 +632,7 @@ private void setClosableTabs(){
 
         public CloseableTabComponent(JTabbedPane tabbedPane, int tabIndex) {
             super(new BorderLayout());
-            setOpaque(false);
+            setOpaque(true);
 
             // Create label for tab title
             JLabel titleLabel = new JLabel(tabbedPane.getTitleAt(tabIndex));
@@ -677,7 +640,7 @@ private void setClosableTabs(){
 
             // Create close button
 
-            JButton closeButton = new JButton("*");
+            JButton closeButton = new JButton("X");
             closeButton.setPreferredSize(new Dimension(20, 15));
             //closeButton.setIcon(new ImageIcon("close_icon.png")); // Replace "close_icon.png" with your actual icon path
             closeButton.setMargin(new Insets(0, 0, 0, 0));
@@ -687,6 +650,8 @@ private void setClosableTabs(){
                 removeSelectedTab();
             });
             add(closeButton, BorderLayout.LINE_END);
+
+
         }
     }
 
@@ -699,8 +664,6 @@ private void setClosableTabs(){
                 return javaSnipList.get(tabIndexJava).getTextPaneText();
             }
         }
-        //    output = javaSnip.getTextPaneText();
-//    output = CPlusPlusSnip.getTextPaneText();
 
     }
 

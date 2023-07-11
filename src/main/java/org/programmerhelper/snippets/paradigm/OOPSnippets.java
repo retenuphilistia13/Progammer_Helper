@@ -128,18 +128,7 @@ StringBuilder errorWords=new StringBuilder();
                 }
             }
 
-//textPane.setText(output);
-
-
-//            if(!livePrev)
-//                textField.setText("");
-//            else if(livePrev){
-//                textPane.setText("");
-//
-//            }
-
-
-            if (!(errorWords.isEmpty())) {
+            if (!(errorWords.isEmpty())) {//display error if exist
                 showError(errorWords);
                 flagSubmitted = false;
             }

@@ -1,8 +1,8 @@
 {
     "snippet": "classItem",
-    "output": "",
+    "output": "    private String ahmedss;\n    private String ahmedss;\n\n  public class ahmedss { \n\n  public class ahmedss { \n\n    public static void main(String args[]){ \n     System.out.println(\"\"); \n     }\n\n   } \n\n    public static void main(String args[]){ \n     System.out.println(\"\"); \n     }\n\n   } \n\n\n    public void setAhmedss(String ahmedss){\n\n    this.ahmedss = ahmedss;\n\n\t}\n\n    public String getAhmedss(){\n\n    return ahmedss; \n\n\t } \n         \n\n    public void setAhmedss(String ahmedss){\n\n    this.ahmedss = ahmedss;\n\n\t}\n\n    public String getAhmedss(){\n\n    return ahmedss; \n\n\t } \n         ",
     "livePrevBox": false,
-    "multipleInputBox": false,
+    "multipleInputBox": true,
     "inputText": "ahmedss",
     "language": "JAVA"
 }
