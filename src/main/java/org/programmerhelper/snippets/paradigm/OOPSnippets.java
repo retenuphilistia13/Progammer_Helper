@@ -77,28 +77,25 @@ public abstract class OOPSnippets extends Snippets { //interface (gui)
 
     protected void oppSubmitInput(SNIPS snip) {
 
-StringBuilder errorWords=new StringBuilder();
+    StringBuilder errorWords=new StringBuilder();
 
         output = "";
 
-        if (listener != null && textField.getText() != null) {
-            listener.onTextSubmitted(textField.getText()); //assign textFeild using an interface
-        }
+    if (listener != null && textField.getText() != null)listener.onTextSubmitted(textField.getText()); //send (save) textFeild value using an interface
 
-        if (submitButton.isSelected()) output = ""; //clear old output
 
-        if (multiInputBox.isSelected() && multiInputBox != null && !textField.getText().isEmpty()) { //multiple Inputs
+    if (submitButton.isSelected()) output = ""; //clear old output
+
+    if (multiInputBox.isSelected() && multiInputBox != null && !textField.getText().isEmpty()) { //multiple Inputs
 
             setOriginalInput(textField.getText());
 
             multipleInput = OOPlanguage.splitInput(getOriginalInput());//splitting words
+            multipleInput = OOPlanguage.getUnique(multipleInput);//extract unique value only
 
-            multipleInput = OOPlanguage.getUnique(multipleInput);
+            gettersSettersMultiVariable(snip);//get getters
 
-            boolean flag;
-
-            gettersSettersMultiVariable(snip);
-
+        boolean flag;
             for (int i = 0; i < multipleInput.length; i++) { //multiple inputs
                 setOriginalInput(multipleInput[i]);
                 flag = OOPlanguage.isVariableValid(getOriginalInput());
@@ -128,16 +125,6 @@ StringBuilder errorWords=new StringBuilder();
                 }
             }
 
-//textPane.setText(output);
-
-
-//            if(!livePrev)
-//                textField.setText("");
-//            else if(livePrev){
-//                textPane.setText("");
-//
-//            }
-
 
             if (!(errorWords.isEmpty())) {
                 showError(errorWords);
@@ -151,9 +138,9 @@ StringBuilder errorWords=new StringBuilder();
 
                 if (OOPlanguage.isVariableValid(getOriginalInput())) {
                     if (snip == SNIPS.GETTERSETTERS) output = OOPlanguage.createVariable(getOriginalInput(), radioType);
-
+                    OOPlanguage.beginOutput.append(output);
                     output += setOutput();
-
+                    OOPlanguage.endOutput.append(setOutput());
                 } else {
                     if (flagSubmitted) {
                         errorWords.append(" \"");
@@ -190,16 +177,10 @@ StringBuilder errorWords=new StringBuilder();
 
 
             }else if(textPane.getSelectedText()!=null){
-//tried the logic doesnt work properly
-//                insertLinesAtBeginningAndEnd(textPane, getSelectedLines(textPane), OOPlanguage.beginOutput.toString(), OOPlanguage.endOutput.toString());
-//
-//                OOPlanguage.beginOutput.delete(0, OOPlanguage.beginOutput.length());
-//                OOPlanguage.endOutput.delete(0, OOPlanguage.endOutput.length());
-//
-               // listener.onTextOutput(textPane.getText());
+
             }
         }
-        //sendOutputListener();
+
 
 
 
@@ -277,7 +258,6 @@ StringBuilder errorWords=new StringBuilder();
             setComponentProperty(3 + posx, posy, 1, 2, 0, 1);
             add(radioVarPanel, c);
         }
-
 
 
 

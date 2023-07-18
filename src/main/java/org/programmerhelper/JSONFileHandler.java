@@ -33,7 +33,7 @@ public class JSONFileHandler {
     private String output;
 
 
-    public void setOutput(String output){
+    public void setFileOutput(String output){
 
         this.output = output;
 
@@ -189,7 +189,8 @@ public class JSONFileHandler {
             setLivePrevBox(jsonObject.getBoolean("livePrevBox"));
             setInputText(jsonObject.getString("inputText"));
             setMultipleInputBox(jsonObject.getBoolean("multipleInputBox"));
-            setOutput(jsonObject.getString("output"));
+
+            setFileOutput(jsonObject.getString("output"));
             // Display the JSON data
 
         } catch (IOException e) {

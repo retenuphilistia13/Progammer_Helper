@@ -8,7 +8,7 @@ public class OutputManager<T> {
     private int undoCapacity = 100;
     private int redoCapacity = 100;
 
-    public OutputManager() {
+    public OutputManager() {//default constructor
         undoStack = new Stack<>();
         redoStack = new Stack<>();
     }

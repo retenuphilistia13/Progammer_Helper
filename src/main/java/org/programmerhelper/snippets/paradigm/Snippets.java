@@ -399,10 +399,11 @@ public String getTextPaneText(){
 
     }
 
-    boolean isAppend;
+
     public void showError(StringBuilder errorWords) {
         JOptionPane.showMessageDialog(this, "error invalid input "+errorWords.toString());
     }
+    protected boolean isAppend;
     protected void commonSubmitListener() {
 
         submitButton.addActionListener(e ->submitAction(e,submitButton));
