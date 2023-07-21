@@ -81,7 +81,9 @@ public class C_Plus_Plus extends OOPLanguage{
     }
 
 	@Override
-	public Set<String> getReservedWords() {
-		return null;
+	public String[] getReservedWords() {
+		return new String[0];
 	}
+
+
 }

@@ -2,6 +2,8 @@ package org.programmerhelper.snippets.paradigm;
 
 
 import org.programmerhelper.Language;
+import org.programmerhelper.paradigm.PLanguage;
+import org.programmerhelper.paradigm.language.Html;
 import org.programmerhelper.paradigm.language.Java;
 import org.programmerhelper.snippets.paradigm.components.CheckComboBox;
 import org.programmerhelper.snippets.paradigm.components.JPane;
@@ -19,7 +21,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.*;
 
-public abstract class Snippets extends JPanel implements ReservedWordsProvider {
+public abstract class Snippets extends JPanel {
 
     protected String originalInput;
     protected String output;
@@ -55,6 +57,8 @@ public abstract class Snippets extends JPanel implements ReservedWordsProvider {
     protected JButton appendButton =new JButton("append");
 
     protected  int posx = 0, posy = 0;
+
+    protected PLanguage currentLanguage;
     public Snippets(PanelListener listener, String text, boolean multi, boolean live) {
         super();
         this.listener = listener;
@@ -74,20 +78,100 @@ public String getTextPaneText(){
     protected abstract void languageInterface();
 
   protected String setOutput(){return null;};///////////virtual method////////////
-  protected void commonListener() {};/////////////////virtual method////////////; (overriden) for livePrevBox
+  protected void commonListener() {
+      currentLanguage= new Html(Language.HTML);
+
+      StringBuilder errorWords=new StringBuilder();
+
+      output = "";
+
+      if (listener != null && textField.getText() != null)listener.onTextSubmitted(textField.getText()); //send (save) textFeild value using an interface
+
+
+      if (submitButton.isSelected()) output = ""; //clear old output
+
+      if (multiInputBox.isSelected() && multiInputBox != null && !textField.getText().isEmpty()) { //multiple Inputs
+
+          setOriginalInput(textField.getText());
+
+          multipleInput = currentLanguage.splitInput(getOriginalInput());//splitting words
+          multipleInput = currentLanguage.getUnique(multipleInput);//extract unique value only
+
+
+          boolean flag;
+          for (int i = 0; i < multipleInput.length; i++) { //multiple inputs
+              setOriginalInput(multipleInput[i]);
+              flag = currentLanguage.isVariableValid(getOriginalInput());
+
+              if (flag) {
+
+
+                  if (i >= 1) {
+                      output += setOutput();
+
+                  } else {
+                      output = setOutput();
+                  }
 
 
 
-    @Override
-    public Set<String> getReservedWords() {
-        ReservedWordsProvider reservedWordsProvider;
+              } else {
+                  if (flagSubmitted) { //to not make live preview sent error (just textfeild, submit button)
+                      errorWords.append("(");
+                      errorWords.append(getOriginalInput());
+                      errorWords.append(")");
 
-        switch (language){
-            case JAVA -> {reservedWordsProvider = new Java();}
-            default -> {reservedWordsProvider = new Java();}
-        }
-        return reservedWordsProvider.getReservedWords();
-    }
+                  }
+              }
+          }
+
+
+          if (!(errorWords.isEmpty())) {
+              showError(errorWords);
+              flagSubmitted = false;
+          }
+
+      } else { //single input
+          if (!textField.getText().isEmpty()) //assign input if not empty
+          {
+              setOriginalInput(textField.getText());
+
+              if (currentLanguage.isVariableValid(getOriginalInput())) {
+                  output=setOutput();
+              } else {
+                  if (flagSubmitted) {
+                      errorWords.append(" \"");
+                      errorWords.append(getOriginalInput());
+                      errorWords.append(" \"");
+                      showError(errorWords);
+                      flagSubmitted = false;
+                  }
+              }
+          }
+
+      }
+
+
+      if(livePrev) {
+          textPane.setText(output);
+      }else if(flagSubmitted&&isAppend==false){
+          textPane.setText(output);
+          listener.onTextOutput(textPane.getText());
+      }
+      else if(isAppend ){//appending mode
+          if(textPane.getSelectedText()==null) {
+
+              currentWritingOutput(output);
+              listener.onTextOutput(textPane.getText());
+
+          }else if(textPane.getSelectedText()!=null){
+
+          }
+      }
+  };/////////////////virtual method////////////; (overriden) for livePrevBox
+
+
+
 
     protected void currentWritingOutput(String Text){
 
@@ -249,15 +333,22 @@ public String getTextPaneText(){
 
         c = new GridBagConstraints();
         // Create the text Pane and text field
-        Set<String>a=getReservedWords();
-        String[] Default = a.toArray(new String[a.size()]);
 
+
+        Java java;
+        java=new Java();
         switch (language){
             case JAVA -> {
-                 Java java;
+//                 Java java;
 
-                 java=new Java();
-                textPane = new JPane(java.accessModifierRadios,java.getDataType(),java.classRadios,Default);// display input
+
+                textPane = new JPane(java.accessModifierRadios,java.getDataType(),java.classRadios,java.getReservedWords());// display input
+            }
+            case HTML -> {
+                Html html;
+
+                html=new Html(Language.HTML);
+                textPane = new JPane(java.classRadios,html.getReservedWords(),html.body, html.comment);// display input
             }
             default -> {
                 textPane = new JPane();

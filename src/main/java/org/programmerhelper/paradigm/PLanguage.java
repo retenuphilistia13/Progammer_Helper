@@ -1,11 +1,11 @@
 package org.programmerhelper.paradigm;
 
 import org.programmerhelper.Language;
-import org.programmerhelper.snippets.paradigm.ReservedWordsProvider;
+
 
 import java.util.Arrays;
 
-public abstract class PLanguage implements ReservedWordsProvider {//Programing Languages
+public abstract class PLanguage  {//Programing Languages
    public  StringBuilder beginOutput;
    public StringBuilder endOutput;
 
@@ -52,5 +52,5 @@ public abstract class PLanguage implements ReservedWordsProvider {//Programing L
     
      public  abstract  boolean isIllegalCharacter(String userInput);
     public abstract  boolean isReserved(String userInput);
-
+    public abstract String []getReservedWords();
 }

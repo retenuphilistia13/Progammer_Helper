@@ -11,7 +11,7 @@ import javax.swing.text.Highlighter;
 
 public class Java extends OOPLanguage {
 
-    private final static String reservedKeywords[] = {"abstract", "assert", "boolean", "break", "byte", "case", "catch",
+    private final  String []reservedKeywords = {"abstract", "assert", "boolean", "break", "byte", "case", "catch",
         "char", "class", "const", "continue", "default", "do", "double", "else", "extends", "false", "final",
         "finally", "float", "for", "goto", "if", "implements", "import", "instanceof", "int", "interface", "long",
         "native", "new", "null", "package", "private", "protected", "public", "return", "short", "static",
@@ -200,14 +200,18 @@ endOutput.append(end);
 
     }
 
-    @Override
-    public Set<String> getReservedWords() {
-        // Define your array of reserved words
+//    @Override
+//    public Set<String> getReservedWords() {
+//        // Define your array of reserved words
+//
+//        // Create a HashSet and add the reserved words from the array
+//        Set<String> reservedWords = new HashSet<>();
+//        Collections.addAll(reservedWords, reservedKeywords);
+//
+//        return reservedWords;
+//    }
 
-        // Create a HashSet and add the reserved words from the array
-        Set<String> reservedWords = new HashSet<>();
-        Collections.addAll(reservedWords, reservedKeywords);
-
-        return reservedWords;
+    public String []getReservedWords(){
+        return reservedKeywords;
     }
 }

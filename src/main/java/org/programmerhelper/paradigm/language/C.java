@@ -35,7 +35,9 @@ public class C extends PLanguage {
     }
 
     @Override
-    public Set<String> getReservedWords() {
-        return null;
+    public String[] getReservedWords() {
+        return new String[0];
     }
+
+
 }

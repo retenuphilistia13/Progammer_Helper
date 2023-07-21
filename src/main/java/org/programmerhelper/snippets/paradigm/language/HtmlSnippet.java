@@ -19,7 +19,6 @@ public class HtmlSnippet extends Snippets {
 
     @Override
     protected void setInterface() {
-        //componentInit();
 
         commonSubmitListener();
 
@@ -69,6 +68,10 @@ public void htmlSnip(){
 
 ///////////////////// Row 3 ////////////////////////////////////////////
         posy++;
+        c.insets = new Insets(5, 10, 10, 0);
+
+        setComponentProperty(1 + posx, posy, 1, 1, 0, 0);
+        add(appendButton,c);
 
 
 ///////////////////// Row 4 ///////////////////////////////////////////
@@ -85,101 +88,12 @@ public void htmlSnip(){
 
 
     }
-    PLanguage currentLanguage;
+
 
     @Override
     protected void commonListener() {
         //add listenr
-        currentLanguage= new Html(Language.HTML);
-
-        StringBuilder errorWords=new StringBuilder();
-
-        output = "";
-
-        if (listener != null && textField.getText() != null)listener.onTextSubmitted(textField.getText()); //send (save) textFeild value using an interface
-
-
-        if (submitButton.isSelected()) output = ""; //clear old output
-
-        if (multiInputBox.isSelected() && multiInputBox != null && !textField.getText().isEmpty()) { //multiple Inputs
-
-            setOriginalInput(textField.getText());
-
-            multipleInput = currentLanguage.splitInput(getOriginalInput());//splitting words
-            multipleInput = currentLanguage.getUnique(multipleInput);//extract unique value only
-
-
-            boolean flag;
-            for (int i = 0; i < multipleInput.length; i++) { //multiple inputs
-                setOriginalInput(multipleInput[i]);
-                flag = currentLanguage.isVariableValid(getOriginalInput());
-
-                if (flag) {
-
-
-                        if (i >= 1) {
-                            output += setOutput();
-
-                        } else {
-                            output = setOutput();
-                        }
-
-
-
-                } else {
-                    if (flagSubmitted) { //to not make live preview sent error (just textfeild, submit button)
-                        errorWords.append("(");
-                        errorWords.append(getOriginalInput());
-                        errorWords.append(")");
-
-                    }
-                }
-            }
-
-
-            if (!(errorWords.isEmpty())) {
-                showError(errorWords);
-                flagSubmitted = false;
-            }
-
-        } else { //single input
-            if (!textField.getText().isEmpty()) //assign input if not empty
-            {
-                setOriginalInput(textField.getText());
-
-                if (currentLanguage.isVariableValid(getOriginalInput())) {
-
-                } else {
-                    if (flagSubmitted) {
-                        errorWords.append(" \"");
-                        errorWords.append(getOriginalInput());
-                        errorWords.append(" \"");
-                        showError(errorWords);
-                        flagSubmitted = false;
-                    }
-                }
-            }
-
-        }
-
-
-        if(livePrev) {
-            textPane.setText(output);
-        }else if(flagSubmitted&&isAppend==false){
-            textPane.setText(output);
-            listener.onTextOutput(textPane.getText());
-        }
-        else if(isAppend ){//appending mode
-            if(textPane.getSelectedText()==null) {
-
-                currentWritingOutput(output);
-                listener.onTextOutput(textPane.getText());
-
-            }else if(textPane.getSelectedText()!=null){
-
-            }
-        }
-
+        super.commonListener();
 
     }
 

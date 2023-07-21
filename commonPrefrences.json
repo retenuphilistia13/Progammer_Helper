@@ -1,8 +1,8 @@
 {
     "snippet": "mainClass",
-    "output": "output",
+    "output": "<\/html>\n <!DOCTYPE>\n<div>\nsssss\n< / div>\nzzz\n<\/html> dd",
     "livePrevBox": false,
     "multipleInputBox": true,
-    "inputText": "ahmed",
+    "inputText": "ahmeds hani",
     "language": "HTML"
 }

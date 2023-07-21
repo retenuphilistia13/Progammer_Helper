@@ -636,7 +636,7 @@ private void updateTab(){
 
 
     private void performLastAction() {//saving properties
-        fileHandle.updateJSONFile(filePath, language, snippet, input, output,livePrev, multi);
+        fileHandle.updateJSONFile(filePath, language, snippet, input, getCurrentOutput(),livePrev, multi);
     }
 
 
